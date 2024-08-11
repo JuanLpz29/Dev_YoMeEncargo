@@ -1,33 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Button from "./components/button"
+import Layout from "./components/layout"
+import NavBar from "./components/navbar"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="bg-accent min h-screen">
+        <NavBar></NavBar>
+        <Layout>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, aliquam eum sint expedita ratione aspernatur ipsum fugit cumque voluptates magni nulla incidunt? Commodi veritatis minus laborum, perferendis sit cum ipsum.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, aliquam eum sint expedita ratione aspernatur ipsum fugit cumque voluptates magni nulla incidunt? Commodi veritatis minus laborum, perferendis sit cum ipsum.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, aliquam eum sint expedita ratione aspernatur ipsum fugit cumque voluptates magni nulla incidunt? Commodi veritatis minus laborum, perferendis sit cum ipsum.</p>
+
+        </Layout>
       </div>
-      <h1>Esto es Yo me Encargo</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          Has presionado el botón {count} veces
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
