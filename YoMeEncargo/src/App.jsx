@@ -1,31 +1,34 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Bloques from "./components/bloques";
-import Button from "./components/button";
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from "./components/layout";
 import NavBar from "./components/navbar";
-import BuscarMecanico from "./components/buscarmecanico"; // Importa el nuevo componente
+import Footer from './components/footer';
+
+import Inicio from './pages/inicio';
+import Perfil from './pages/perfil';
+import Ayuda from './pages/ayuda';
+import Buscarmecanico from './pages/buscarmecanico';
 
 function App() {
+  
   return (
-    <Router>
+    <>
       <div className="bg-primary min h-screen">
-        <NavBar />
+        <NavBar></NavBar>
         <Layout>
           <Routes>
-            <Route path="/" element={<Home />} /> 
-            <Route path="/buscar-mecanico" element={<BuscarMecanico />} />
+            <Route path='/' element = {<Inicio></Inicio>} ></Route>
+            <Route path='/perfil' element = {<Perfil></Perfil>} ></Route> 
+            <Route path='/ayuda' element = {<Ayuda></Ayuda>} ></Route>
+            <Route path='/buscarmecanico' element = {<Buscarmecanico></Buscarmecanico>} ></Route>
+            <Route path='*' element ={<Navigate to ="/" ></Navigate>} ></Route>
           </Routes>
         </Layout>
-        <Bloques />
+        <Footer/>
       </div>
-    </Router>
+      </>
   );
 }
 
-function Home() {
-  return (
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis, aliquam eum sint expedita ratione aspernatur ipsum fugit cumque voluptates magni nulla incidunt? Commodi veritatis minus laborum, perferendis sit cum ipsum.</p>
-  );
-}
+
 
 export default App;
