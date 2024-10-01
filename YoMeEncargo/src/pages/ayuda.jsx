@@ -1,4 +1,4 @@
-
+import ListaUsuarios from "../components/lista"
 
 export const Ayuda = () => {
   return (

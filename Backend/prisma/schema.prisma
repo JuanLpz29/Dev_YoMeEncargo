@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+enum Rol {
+  ADMIN
+  USUARIO
+  MECANICO
+}
+
+enum Servicio {
+  ESTANDAR
+  PREMIUM
+}
+
+enum Pago {
+  PENDIENTE
+  PAGADO
+}
+
+model Usuario {
+  id         Int    @id @default(autoincrement())
+  nombre     String @db.VarChar
+  apellido   String @db.VarChar
+  celular    String @db.VarChar
+  correo     String @unique @db.VarChar
+  contrasena String @db.VarChar
+  rol        Rol    @default(USUARIO)
+
+  mecanico Mecanico?
+}
+
+model Vehiculo {
+  id         Int    @id @default(autoincrement())
+  marca      String @db.VarChar
+  modelo     String @db.VarChar
+  anio       Int    @db.Integer
+  id_usuario Int    @db.Integer
+
+  reservas Reserva[]
+}
+
+model Reserva {
+  id          Int      @id @default(autoincrement())
+  fecha       DateTime @db.Date
+  horaInicio  DateTime @db.Timestamp
+  horaFin     DateTime @db.Timestamp
+  servicio    Servicio @default(ESTANDAR)
+  id_vehiculo Int      @db.Integer
+
+  reservas Revision[]
+
+  vehiculo Vehiculo @relation(fields: [id_vehiculo], references: [id])
+}
+
+model Mecanico {
+  id          Int    @id @default(autoincrement())
+  id_usuario  Int    @unique @db.Integer
+  certificado String @db.VarChar
+  horario     String @db.VarChar
+  valoracion  Float? @db.Real
+  url_foto    String @db.VarChar
+
+  revisiones Revision[]
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id])
+}
+
+model Revision {
+  id          Int    @id @default(autoincrement())
+  id_mecanico Int    @db.Integer
+  id_reserva  Int    @db.Integer
+  reporte     String @db.VarChar
+  comentario  String @db.Text
+  pago        Pago   @default(PENDIENTE)
+
+  mecanico Mecanico @relation(fields: [id_mecanico], references: [id])
+  reserva  Reserva  @relation(fields: [id_reserva], references: [id])
+}
