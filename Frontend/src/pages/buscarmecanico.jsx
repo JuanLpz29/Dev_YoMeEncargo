@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const BuscarMecánico = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -11,10 +11,14 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
     year: ''
   })
 
+  const [errors, setErrors] = useState({})
+
   const navigate = useNavigate();
 
   const ListaMechClick = () => {
-    navigate('/listamech');  // Redirige a la página del nuevo componente
+    if (validateForm()) {
+      navigate('/listamech');  // Redirige a la página del nuevo componente
+    }
   };
 
   const handleBack = () => {
@@ -24,37 +28,54 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
   
-    // Formateo para la patente en el formato XX-XX-XX
     if (name === 'licensePlate') {
-      const rawValue = value.replace(/-/g, '').slice(0, 6).toUpperCase(); // Elimina los guiones, limita a 6 caracteres y convierte a mayúsculas
+      const rawValue = value.replace(/-/g, '').slice(0, 6).toUpperCase();
       const formattedValue = rawValue.replace(/(\w{2})(\w{2})?(\w{2})?/, (match, p1, p2, p3) => {
-        return [p1, p2, p3].filter(Boolean).join('-'); // Añade guiones después de cada dos caracteres
+        return [p1, p2, p3].filter(Boolean).join('-');
       });
       
       setFormData((prevData) => ({
         ...prevData,
         [name]: formattedValue,
       }));
-
     } else if (name === 'year') {
-      // Limitar el año a 4 caracteres
       setFormData((prevData) => ({
         ...prevData,
         [name]: value.slice(0, 4),  
       }));
-
     } else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
       }));
     }
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        [name]: ''
+      }))
+    }
   };
-  
+
+  const validateForm = () => {
+    const newErrors = {}
+    if (!formData.location.trim()) newErrors.location = 'La ubicación es requerida'
+    if (!formData.make.trim()) newErrors.make = 'La marca es requerida'
+    if (!formData.model.trim()) newErrors.model = 'El modelo es requerido'
+    if (!formData.year.trim()) newErrors.year = 'El año es requerido'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault()  //Evita que la página se recargue (los formularios de forma predeterminada hacen eso) al presionar botones como 'ingresar' por ejemplo.
-    onSubmit(formData)
+    e.preventDefault()
+    ListaMechClick()
+    if (validateForm()) {
+      onSubmit(formData)
+      
+    }
   }
 
   return (
@@ -82,9 +103,12 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
               value={formData.location}
               onChange={handleChange}
               placeholder="Ingrese la dirección para realizar la revisión"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-400 placeholder-gray-400 focus:text-black"
+              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400 ${
+                errors.location ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
             />
+            {errors.location && <p className="mt-1 text-xs text-red-500">{errors.location}</p>}
           </div>
           <div>
             <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,9 +121,12 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
               value={formData.make}
               onChange={handleChange}
               placeholder="Marca del vehículo"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-400 placeholder-gray-400 focus:text-black"
+              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400 ${
+                errors.make ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
             />
+            {errors.make && <p className="mt-1 text-xs text-red-500">{errors.make}</p>}
           </div>
           <div>
             <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">
@@ -112,9 +139,12 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
               value={formData.model}
               onChange={handleChange}
               placeholder="Modelo del vehículo"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-400 placeholder-gray-400 focus:text-black"
+              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400 ${
+                errors.model ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
             />
+            {errors.model && <p className="mt-1 text-xs text-red-500">{errors.model}</p>}
           </div>
           <div>
             <label htmlFor="licensePlate" className="block text-sm font-medium text-gray-700 mb-1">
@@ -128,7 +158,7 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
               onChange={handleChange}
               placeholder="XX-XX-XX"
               maxLength="8"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-400 placeholder-gray-400 focus:text-black"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400"
             />
           </div>
           <div>
@@ -142,15 +172,18 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
               value={formData.year}
               onChange={handleChange}
               placeholder="Año del vehículo"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-400 placeholder-gray-400 focus:text-black"
+              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400 ${
+                errors.year ? 'border-red-500' : 'border-gray-300'
+              }`}
               required
             />
+            {errors.year && <p className="mt-1 text-xs text-red-500">{errors.year}</p>}
           </div>
           <div className="flex flex-col space-y-2 pt-4">
             <button
               type="submit"
-              className="w-full bg-purple-600 text-white py-2 px-4 rounded-full hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
               onClick={ListaMechClick}
+              className="w-full bg-purple-600 text-white py-2 px-4 rounded-full hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
             >
               Ingresar
             </button>

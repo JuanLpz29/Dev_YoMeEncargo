@@ -8,7 +8,7 @@ const NavBar = () => {
   return (
     <header className="flex items-center justify-between p-4 bg-white border-b">
       <div className="flex items-center space-x-2">
-        <img src="/placeholder.svg" alt="YoMeEncargo Logo" width={32} height={32} />
+        <img src="src/assets/images/car_icon.png" alt="YoMeEncargo Logo" width={32} height={32} />
         <span className="text-xl font-bold">
           YoMe<span className="text-purple-600">Encargo</span>
         </span>
