@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../data/postgres';
-import { CreateUsuarioDto, UpdateUsuarioDto } from '../../domain/dtos';
+import { prisma } from '../../data';
+import { CreateUsuarioDto, UpdateUsuarioDto } from '../../domain';
 
 export class UsuariosController {
 
@@ -88,7 +88,7 @@ export class UsuariosController {
         });
 
         // Retorna verdadero si el correo ya está en uso, falso en caso contrario
-        return !!existeCorreo; //Doble exclamación devuelve valor bool
+        return !!existeCorreo;
     };
 
 }

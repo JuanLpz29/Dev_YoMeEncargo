@@ -12,6 +12,10 @@ export default {
         secondary: '#1E293B', 
         accent: "#1565C0",
       },
+      backgroundImage: {
+        'close-menu': "url('img/icon-close.svg')",
+        'open-menu': "url('img/icon-hamburger.svg')",
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../data/postgres';
-import { CreateMecanicoDto, UpdateMecanicoDto } from '../../domain/dtos';
+import { prisma } from '../../data';
+import { CreateMecanicoDto, UpdateMecanicoDto } from '../../domain';
+import fs from 'fs';
+import path from 'path';
 
 interface Files {
     [fieldname: string]: Express.Multer.File[];
@@ -12,36 +14,42 @@ export class MecanicosController {
     constructor() { }
 
     public createMecanico = async (req: Request, res: Response) => {
-
         const files: Files | undefined = req.files as Files;
         const certificado = files['certificado'] ? files['certificado'][0].filename : null;
-        const foto = files['foto'] ? files['foto'][0].filename : null;
+        const url_foto = files['foto'] ? files['foto'][0].filename : null;
 
-        if (!certificado || !foto) {
-            return res.status(400).json({ message: 'No se enviaron todos los archivos' });
+        try {
+            const [error, createMecanicoDto] = CreateMecanicoDto.create({ ...req.body, certificado, url_foto });
+            if (error) {
+                this.deleteFiles(certificado, url_foto);
+                return res.status(400).json({ error });
+            }
+
+            const userExists = await prisma.usuario.findUnique({
+                where: { id: createMecanicoDto!.id_usuario }
+            });
+            if (!userExists) {
+                this.deleteFiles(certificado, url_foto);
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            const mecanicoExists = await prisma.mecanico.findUnique({
+                where: { id_usuario: createMecanicoDto!.id_usuario }
+            });
+            if (mecanicoExists) {
+                this.deleteFiles(certificado, url_foto);
+                return res.status(400).json({ message: 'El usuario ya es un mecánico' });
+            }
+
+            const newMecanico = await prisma.mecanico.create({
+                data: createMecanicoDto!
+            });
+
+            return res.json(newMecanico);
+        } catch (error) {
+            this.deleteFiles(certificado, url_foto);
+            return res.status(500).json({ message: 'Error al crear el mecánico' });
         }
-
-        const id_usuario = +req.body.id_usuario;
-        if (!id_usuario) return res.status(400).json({ message: 'ID de usuario inválido' });
-
-        const horario = req.body.horario;
-
-        const mecanicoData = {
-            id_usuario: id_usuario,
-            horario: horario,
-            certificado: certificado,
-            url_foto: foto
-        };
-
-        const [error, createMecanicoDto] = CreateMecanicoDto.create(mecanicoData);
-        if (error) return res.status(400).json({ error });
-
-        const newMecanico = await prisma.mecanico.create({
-            data: createMecanicoDto!
-        });
-
-        return res.json(newMecanico);
-
     };
 
     public getMecanicos = async (req: Request, res: Response) => {
@@ -86,5 +94,33 @@ export class MecanicosController {
 
         res.json({ message: 'Mecánico eliminado' });
     };
+
+
+    private deleteFiles(certificado: string | null, url_foto: string | null) {
+        if (certificado) {
+            const certificadoPath = path.join(__dirname, '../../../uploads/certificados', certificado);
+            console.log(`Trying to delete certificado: ${certificadoPath}`); // Verifica la ruta
+            fs.unlink(certificadoPath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file ${certificado}:`, err);
+                } else {
+                    console.log(`Successfully deleted certificado: ${certificado}`);
+                }
+            });
+        }
+
+        if (url_foto) {
+            const fotoPath = path.join(__dirname, '../../../uploads/fotos', url_foto);
+            console.log(`Trying to delete foto: ${fotoPath}`); // Verifica la ruta
+            fs.unlink(fotoPath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file ${url_foto}:`, err);
+                } else {
+                    console.log(`Successfully deleted foto: ${url_foto}`);
+                }
+            });
+        }
+    }
+
 
 }

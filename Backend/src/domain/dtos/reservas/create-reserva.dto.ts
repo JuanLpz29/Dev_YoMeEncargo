@@ -6,14 +6,15 @@ export class CreateReservaDto {
         public readonly horaInicio: Date,
         public readonly horaFin: Date,
         public readonly id_vehiculo: number,
+        public readonly ubicacion: string,
     ) { }
 
     static create(props: { [key: string]: any }): [string?, CreateReservaDto?] {
-        const { fecha, horaInicio, horaFin } = props;
+        const { fecha, horaInicio, horaFin, ubicacion } = props;
         const id_vehiculo = +props.id_vehiculo;
 
         // Validaciones de campos obligatorios
-        if (!fecha || !horaInicio || !horaFin || !id_vehiculo) {
+        if (!fecha || !horaInicio || !horaFin || !id_vehiculo || !ubicacion) {
             return ['No se enviaron todos los campos correctamente', undefined];
         }
 
@@ -74,6 +75,6 @@ export class CreateReservaDto {
         }
 
         // Devolver el nuevo DTO con las fechas ajustadas
-        return [undefined, new CreateReservaDto(newFecha, newHoraInicio, newHoraFin, id_vehiculo)];
+        return [undefined, new CreateReservaDto(newFecha, newHoraInicio, newHoraFin, id_vehiculo, ubicacion)];
     }
 }

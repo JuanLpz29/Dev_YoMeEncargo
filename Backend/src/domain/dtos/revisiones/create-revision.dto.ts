@@ -1,5 +1,17 @@
 
 
+// model Revision {
+//   id          Int @id @default (autoincrement())
+//   id_mecanico Int @db.Integer
+//   id_reserva  Int @db.Integer
+//   reporte     String @db.VarChar
+//   comentario  String @db.Text
+//   pago        Pago @default (PENDIENTE)
+
+//   mecanico Mecanico @relation(fields: [id_mecanico], references: [id])
+//   reserva  Reserva @relation(fields: [id_reserva], references: [id])
+// }
+
 export class CreateRevisionDto {
 
     private constructor(

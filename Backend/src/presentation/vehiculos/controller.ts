@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CreateVehiculoDto, UpdateVehiculoDto } from '../../domain/dtos';
-import { prisma } from '../../data/postgres';
+import { CreateVehiculoDto, UpdateVehiculoDto } from '../../domain';
+import { prisma } from '../../data';
 
 export class VehiculosController {
 

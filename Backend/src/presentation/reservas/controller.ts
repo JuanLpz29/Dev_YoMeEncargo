@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CreateReservaDto } from '../../domain/dtos/reservas/create-reserva.dto';
-import { UpdateReservaDto } from '../../domain/dtos';
-import { prisma } from '../../data/postgres';
+import { UpdateReservaDto } from '../../domain';
+import { prisma } from '../../data';
 import moment from 'moment-timezone';
 
 export class ReservasController {

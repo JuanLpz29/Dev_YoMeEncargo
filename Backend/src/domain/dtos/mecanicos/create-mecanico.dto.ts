@@ -15,9 +15,15 @@ export class CreateMecanicoDto {
 
         const { id_usuario, horario, certificado, url_foto } = props;
 
-        if (!id_usuario || !horario || !certificado || !url_foto) return ['No se enviaron todos los campos', undefined];
+        if (!certificado) return ['El certificado es requerido'];
+        if (!url_foto) return ['La foto es requerida'];
+        if (!id_usuario) return ['El id_usuario es requerido'];
+        if (!horario) return ['El horario es requerido'];
 
-        return [undefined, new CreateMecanicoDto(id_usuario, horario, certificado, url_foto, 0)];
+        const idUsuarioNumber = Number(id_usuario);
+        if (isNaN(idUsuarioNumber)) return ['El id_usuario debe ser un número válido'];
+
+        return [undefined, new CreateMecanicoDto(idUsuarioNumber, horario, certificado, url_foto, 0)];
 
     }
 

@@ -46,6 +46,7 @@ model Vehiculo {
   marca      String @db.VarChar
   modelo     String @db.VarChar
   anio       Int    @db.Integer
+  patente    String @db.VarChar
   id_usuario Int    @db.Integer
 
   reservas Reserva[]
@@ -56,6 +57,7 @@ model Reserva {
   fecha       DateTime @db.Date
   horaInicio  DateTime @db.Timestamp
   horaFin     DateTime @db.Timestamp
+  ubicacion   String   @db.VarChar
   servicio    Servicio @default(ESTANDAR)
   id_vehiculo Int      @db.Integer
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CreateRevisionDto, UpdateRevisionDto } from '../../domain/dtos';
-import { prisma } from '../../data/postgres';
+import { CreateRevisionDto, UpdateRevisionDto } from '../../domain';
+import { prisma } from '../../data';
 
 // model Revision {
 //   id          Int @id @default (autoincrement())
