@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-const BuscarMecánico = ({ onClose, onSubmit }) => {
+const BuscarMecanico = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     location: '',
     make: '',
@@ -92,24 +92,7 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
           </button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-              Ubicación del vehículo
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Ingrese la dirección para realizar la revisión"
-              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 text-gray-900 placeholder-gray-400 ${
-                errors.location ? 'border-red-500' : 'border-gray-300'
-              }`}
-              required
-            />
-            {errors.location && <p className="mt-1 text-xs text-red-500">{errors.location}</p>}
-          </div>
+
           <div>
             <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">
               Marca
@@ -148,7 +131,7 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
           </div>
           <div>
             <label htmlFor="licensePlate" className="block text-sm font-medium text-gray-700 mb-1">
-              Patente (Opcional)
+              Patente
             </label>
             <input
               type="text"
@@ -201,4 +184,4 @@ const BuscarMecánico = ({ onClose, onSubmit }) => {
   )
 }
 
-export default BuscarMecánico
+export default BuscarMecanico

@@ -1,5 +1,4 @@
 
-
 const Ayuda = () => {
     return (
       <section className="text-white-600 body-font">

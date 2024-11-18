@@ -9,7 +9,7 @@ const Inicio = () => {
   
   
   return (
-    <main className="flex flex-col items-center justify-center p-4 space-y-8 max-w-4xl mx-auto">
+    <main className="flex-grow flex-col items-center justify-center p-4 space-y-8 max-w-4xl mx-auto">
       <div className="w-full h-48 relative rounded-lg overflow-hidden">
       <img 
           src="/src/assets/images/top-image.jpg" 
