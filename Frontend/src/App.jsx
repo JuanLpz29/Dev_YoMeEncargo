@@ -1,52 +1,77 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
-import NavBar from "./components/navbar";
-import Footer from "./components/footer";
+import HomePage from "./pages/Home";
 
-import Inicio from "./pages/inicio";
 import Perfil from "./pages/perfil";
 import Ayuda from "./pages/ayuda";
-import Buscarmecanico from "./pages/buscarmecanico";
+
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
+
 import ListaMech from "./pages/listamech";
-import LoginPage from "./pages/loginpage";
-import RegisterPage from "./pages/registerpage";
+//import Mecanicos from "./pages/mecanicos";
+
+import ReservationModal from "./pages/reservationmodal";
+import VehicleForm from "./pages/VehicleForm";
+
+import HandlerPayment from "./components/handlerpayment";
+
+import NotFound from "./pages/NotFound";
 
 function App() {
 	return (
 		<>
-			<div className="bg-primary min h-screen">
-				<NavBar
-					userType="mecanico"
-					userName="Juan Pérez"
-					userPhoto="/src/assets/images/foto1.jpg"
-					isLogged={true}
-				></NavBar>
+			<div className="bg-offCyan min h-screen">
 				<Routes>
-					<Route path="/" element={<Inicio></Inicio>}></Route>
+					<Route path="/" element={<HomePage></HomePage>}></Route>
+					
 					<Route
-						path="/loginpage"
+						path="/login"
 						element={<LoginPage></LoginPage>}
 					></Route>
+					
 					<Route
-						path="/registerpage"
+						path="/register"
 						element={<RegisterPage></RegisterPage>}
 					></Route>
-					<Route path="/perfil" element={<Perfil></Perfil>}></Route>
-					<Route path="/ayuda" element={<Ayuda></Ayuda>}></Route>
-					<Route
-						path="/buscarmecanico"
-						element={<Buscarmecanico></Buscarmecanico>}
-					></Route>
+					
 					<Route
 						path="/listamech"
 						element={<ListaMech></ListaMech>}
 					></Route>
+
+					{/* <Route
+						path="/mecanicos"
+						element={<Mecanicos></Mecanicos>}
+					></Route> */}
+
 					<Route
-						path="*"
-						element={<Navigate to="/"></Navigate>}
+						path="/reservationmodal"
+						element={<ReservationModal></ReservationModal>}		
 					></Route>
+
+					<Route
+						path="/VehicleForm"
+						element={<VehicleForm></VehicleForm>}
+					></Route>
+
+					<Route
+						path="/handlerpayment"
+						element={<HandlerPayment></HandlerPayment>}
+					></Route>
+
+					<Route 
+						path="/perfil" 
+						element={<Perfil></Perfil>}
+					></Route>
+
+					<Route
+						path="/ayuda"
+						element={<Ayuda></Ayuda>}
+					></Route>
+
+					<Route path="*" element={<NotFound></NotFound>}></Route>
 				</Routes>
-				<Footer></Footer>
 			</div>
 		</>
 	);

@@ -9,12 +9,14 @@ export default {
     extend: {
       colors: {
         primary: '#FFFFFF', //blanco
-        secondary: '#1E293B', 
-        accent: "#1565C0",
+        myGray: '#1E293B',  //gris oscuro del navbar, etc.
+        myColor: '#43a6e8', // color botones y letritas del logo
+        offCyan: '#E4F5F5', //light cyan background
       },
       backgroundImage: {
         'close-menu': "url('img/icon-close.svg')",
         'open-menu': "url('img/icon-hamburger.svg')",
+        'logo-pattern': "url('src/assets/images/Login.jpeg')",
       },
     },
   },

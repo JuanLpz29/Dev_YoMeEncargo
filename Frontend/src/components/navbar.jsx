@@ -1,114 +1,233 @@
+import { useState, useRef, useEffect } from "react";
+import { CloseMenuIcon, OpenMenuIcon } from "../assets/icons";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
-const NavBar = ({ userType, userName, userPhoto, isLogged }) => {
+const usuarioString = localStorage.getItem("usuario");
+const usuario = JSON.parse(usuarioString);
+console.log("usuario >>>", usuario);
+const token = localStorage.getItem("token");
+const loggedIn = token ? true : false;
+
+const ProfileDropDown = (props) => {
+	const [state, setState] = useState(false);
+	const profileRef = useRef();
+
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("usuario");
+		console.log("Usuario deslogueado");
+		navigate("/");
+	};
+
+	const navigation = [
+		{ title: "Perfil", path: "/perfil" },
+		{ title: "Salir", path: "/", onClick: handleLogout },
+	];
+
+	useEffect(() => {
+		const handleDropDown = (e) => {
+			if (!profileRef.current.contains(e.target)) setState(false);
+		};
+		document.addEventListener("click", handleDropDown);
+	}, []);
+
+	const getInitials = (nombre, apellido) => {
+		return `${nombre?.charAt(0) || ""}${
+			apellido?.charAt(0) || ""
+		}`.toUpperCase();
+	};
+
 	return (
-		<header className="bg-black">
-			<nav className="h-20 w-[90%] mx-auto overflow-hidden max-w-screen-xl items-center flex">
-				<div className="flex w-1/6 min-w-40">
-					<a href="./">
+		<div className={`relative ${props.className}`}>
+			<div className="flex items-center space-x-4">
+				<button
+					ref={profileRef}
+					className="w-10 h-10 outline-none rounded-full ring-offset-2 ring-[#43a6e8] ring-2 flex items-center justify-center bg-gray-200"
+					onClick={() => setState(!state)}
+				>
+					{usuario?.imagen ? (
 						<img
-							src="img/logoyme.svg"
-							alt="logo"
-							className="w-full"
+							src={usuario.imagen}
+							className="w-full h-full rounded-full"
+							alt={`${usuario.nombre} ${usuario.apellido}`}
 						/>
-					</a>
-				</div>
-				<div className="flex flex-grow md:w-3/6 justify-center">
-					<input type="checkbox" id="menu" className="peer hidden" />
-					<label
-						htmlFor="menu"
-						className="bg-open-menu w-6 h-5 bg-cover bg-center cursor-pointer peer-checked:bg-close-menu transition-all z-50 md:hidden"
-					></label>
-					<div className="fixed inset-0 bg-gradient-to-b from-white/70 to-black/70 translate-x-full peer-checked:translate-x-0 transition-transform md:static md:bg-none md:translate-x-0">
-						<ul className="absolute inset-x-0 top-24 p-12 bg-white w-[90%] mx-auto rounded-md h-max text-center grid gap-6 font-bold text-[#43a6e8] shadow-2xl md:w-max md:bg-transparent md:p-0 md:grid-flow-col md:static">
-							<li>
-								<a href="#">Inicio</a>
-							</li>
-							<li>
-								<a href="#">Perfil</a>
-							</li>
-							<li>
-								<a href="#">Ayuda</a>
-							</li>
-							{/* Mostrar "Soy Mecánico" solo si está logueado */}
-							{isLogged && userType === "usuario" && (
-								<li>
-									<a
-										href="#"
-										className="bg-[#43a6e8] text-white px-4 py-2 rounded-full shadow-md shadow-[#43a6e8]/50"
-									>
-										Soy Mecánico
-									</a>
-								</li>
-							)}
-						</ul>
-					</div>
-				</div>
-				<div className="flex items-center md:w-1/6 min-w-40 justify-end">
-					{!isLogged ? (
-						<a
-							href="#"
-							className="bg-[#43a6e8] text-white w-max py-4 px-12 rounded-full shadow-sm shadow-[#43a6e8]/30"
-						>
-							Iniciar Sesión
-						</a>
 					) : (
-						<div className="flex items-center mr-4">
-							<div className="relative">
-								<button className="text-white hover:text-[#43a6e8]">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="h-6 w-6"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-										/>
-									</svg>
-								</button>
-								<span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 text-xs flex items-center justify-center">
-									3
-								</span>
-							</div>
-							<div className="ml-4">
-								<button className="flex items-center space-x-2">
-									{userType === "mecanico" && userPhoto ? (
-										<img
-											src={userPhoto}
-											alt="Usuario"
-											className="w-8 h-8 rounded-full"
-										/>
-									) : (
-										<div className="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center">
-											{userName
-												.split(" ")
-												.map((n) => n[0])
-												.join("")}
-										</div>
-									)}
-									<span className="text-white hover:text-[#43a6e8]">
-										{userName}
-									</span>
-								</button>
-							</div>
-						</div>
+						<span className="text-[#43a6e8] font-semibold">
+							{getInitials(usuario?.nombre, usuario?.apellido)}
+						</span>
 					)}
+				</button>
+				<div className="md:hidden lg:block">
+					<span className="block text-[#43a6e8]">
+						{usuario.nombre} {usuario.apellido}
+					</span>
+					<span className="block text-sm text-white">
+						{usuario.correo}
+					</span>
 				</div>
-			</nav>
-		</header>
+			</div>
+			<ul
+				className={`md:bg-[#1E293B] top-12 right-0 mt-5 space-y-5 md:absolute md:border md:rounded-md md:text-sm md:w-52 md:shadow-md md:space-y-0 md:mt-0 ${
+					state ? "" : "md:hidden"
+				}`}
+			>
+				{navigation.map((item, idx) => (
+					<li key={idx}>
+						<a
+							className="block text-white hover:text-[#43a6e8] md:p-2.5"
+							href={item.path}
+							onClick={item.onClick}
+						>
+							{item.title}
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
 	);
 };
 
-NavBar.propTypes = {
-	userType: PropTypes.oneOf(["usuario", "mecanico"]),
-	userName: PropTypes.string,
-	userPhoto: PropTypes.string,
-	isLogged: PropTypes.bool,
+const NavBar = () => {
+	const [state, setState] = useState(false);
+
+	const navigation = [
+		// { title: "Contacto", path: "javascript:void(0)" },
+		// { title: "FAQs", path: "javascript:void(0)" },
+	];
+
+	useEffect(() => {
+		const handleClickOutside = (e) => {
+			if (
+				!e.target.closest(".menu-btn") &&
+				!e.target.closest(".menu-items")
+			) {
+				setState(false);
+			}
+		};
+		document.addEventListener("click", handleClickOutside);
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, []);
+
+	return (
+		<nav
+			className={`bg-myGray md:text-sm border-b ${
+				state
+					? "shadow-lg rounded-xl border mx-2 mt-2 md:shadow-none md:border-none md:mx-2 md:mt-0"
+					: ""
+			}`}
+		>
+			<div className="gap-x-14 items-center max-w-screen-xl mx-auto px-4 md:flex md:px-8">
+				<div className="flex items-center justify-between py-5 md:block">
+					<a href="/">
+						<img
+							src="img/logoyme.svg"
+							width={240}
+							height={50}
+							alt="YoMeEncargo logo"
+						/>
+					</a>
+					<div className="md:hidden">
+						<button
+							className="menu-btn text-white hover:text-[#43a6e8]"
+							onClick={(e) => {
+								e.stopPropagation();
+								setState(!state);
+							}}
+						>
+							{state ? <CloseMenuIcon /> : <OpenMenuIcon />}
+						</button>
+					</div>
+				</div>
+				<div
+					className={`flex-1 items-center md:mt-0 md:flex ${
+						state ? "block" : "hidden"
+					} `}
+				>
+					<ul className="justify-center items-center space-y-6 border-b md:border-none md:flex md:space-x-6 md:space-y-0">
+						{navigation.map((item, idx) => {
+							return (
+								<li
+									key={idx}
+									className="text-white hover:text-[#43a6e8]"
+								>
+									<a href={item.path} className="block">
+										{item.title}
+									</a>
+								</li>
+							);
+						})}
+					</ul>
+					{!loggedIn ? (
+						<div className="flex-1 gap-x-6 items-center justify-end py-6 space-y-6 md:flex md:space-y-0 md:mt-0">
+							<a
+								href="/login"
+								className="block text-white hover:text-[#43a6e8]"
+							>
+								Iniciar sesión
+							</a>
+							<a
+								href="/register"
+								className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-[#43a6e8] hover:bg-white hover:text-[#43a6e8] active:bg-gray-900 rounded-full md:inline-flex"
+							>
+								Registrarse
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									className="w-5 h-5"
+								>
+									<path
+										fillRule="evenodd"
+										d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+										clipRule="evenodd"
+									/>
+								</svg>
+							</a>
+						</div>
+					) : (
+						<div className="flex-1 flex items-center justify-between md:justify-end space-x-2 sm:space-x-6">
+							<ProfileDropDown className="py-8 md:py-0" />
+							{usuario?.rol !== "MECANICO" && (
+								<div>
+									<a
+										href="javascript:void(0)"
+										className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-[#43a6e8] hover:bg-white hover:text-[#43a6e8] active:bg-gray-900 rounded-full md:inline-flex"
+									>
+										Soy Mecánico
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+											className="w-5 h-5"
+										>
+											<path
+												fillRule="evenodd"
+												d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</a>
+								</div>
+							)}
+						</div>
+					)}
+				</div>
+			</div>
+		</nav>
+	);
 };
 
 export default NavBar;
+
+ProfileDropDown.propTypes = {
+	className: PropTypes.string,
+};
+
+ProfileDropDown.defaultProps = {
+	className: "",
+};

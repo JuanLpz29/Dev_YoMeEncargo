@@ -1,9 +1,4 @@
-
-# Acerca del Repositorio YoMeEncargo  
-Este repositorio contiene el desarrollo de mi proyecto de tesis: **Yo Me Encargo**, una Aplicación Web Progresiva (PWA) diseñada para facilitar servicios de mecánicos para la revisión pre-compra de vehículos usados.  
-
-Para ver una guía detallada paso a paso con fines educativos, puedes consultar el siguiente enlace a Notion:  
-[Guía de Desarrollo](https://ember-check-3c8.notion.site/DEV-YmE-b68798bad944471494a328bdcf5c7e5f)
+# Repositorio YoMeEncargo
 
 # Instrucciones de uso  
 
