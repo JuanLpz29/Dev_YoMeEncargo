@@ -8,20 +8,18 @@ import Ayuda from "./pages/ayuda";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
-import ListaMech from "./pages/listamech";
-//import Mecanicos from "./pages/mecanicos";
+import Mecanicos from "./pages/mecanicos";
 
-import ReservationModal from "./pages/reservationmodal";
-import VehicleForm from "./pages/VehicleForm";
-
-import HandlerPayment from "./components/handlerpayment";
+import Inspecciones from "./pages/VistaMecanico/inspecciones";
 
 import NotFound from "./pages/NotFound";
 
+import Reporte from "./pages/VistaMecanico/reporte";
+
 function App() {
 	return (
-		<>
-			<div className="bg-offCyan min h-screen">
+		<div className="bg-offCyan">
+			<div className="min h-screen">
 				<Routes>
 					<Route path="/" element={<HomePage></HomePage>}></Route>
 					
@@ -36,28 +34,8 @@ function App() {
 					></Route>
 					
 					<Route
-						path="/listamech"
-						element={<ListaMech></ListaMech>}
-					></Route>
-
-					{/* <Route
 						path="/mecanicos"
 						element={<Mecanicos></Mecanicos>}
-					></Route> */}
-
-					<Route
-						path="/reservationmodal"
-						element={<ReservationModal></ReservationModal>}		
-					></Route>
-
-					<Route
-						path="/VehicleForm"
-						element={<VehicleForm></VehicleForm>}
-					></Route>
-
-					<Route
-						path="/handlerpayment"
-						element={<HandlerPayment></HandlerPayment>}
 					></Route>
 
 					<Route 
@@ -70,10 +48,25 @@ function App() {
 						element={<Ayuda></Ayuda>}
 					></Route>
 
+					<Route
+						path="/inspecciones"
+						element={<Inspecciones></Inspecciones>}
+					></Route>
+
+					<Route
+						path="/reporte"
+						element={<Reporte></Reporte>}
+					></Route>
+
+					<Route
+						path="/revision/compartir/:id"
+						element={<Reporte></Reporte>}
+					></Route>
+
 					<Route path="*" element={<NotFound></NotFound>}></Route>
 				</Routes>
 			</div>
-		</>
+		</div>
 	);
 }
 

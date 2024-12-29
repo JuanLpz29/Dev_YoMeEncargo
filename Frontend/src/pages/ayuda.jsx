@@ -1,21 +1,53 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import emailjs from '@emailjs/browser';
 import NavBar from "../components/navbar";
 import Footer from "../components/footer";
 
+emailjs.init('QH6mZtifRM8VaDIat'); // Public Key	
+
 const Ayuda = () => {
 	const [formSubmitted, setFormSubmitted] = useState(false);
+	const [formData, setFormData] = useState({
+		fullName: '',
+		email: '',
+		message: ''
+	});
 	
 	const navigate = useNavigate();
 
-	const handleSubmit = (e) => {
+	const handleChange = (e) => {
+		setFormData({
+			...formData,
+			[e.target.name]: e.target.value
+		});
+	};
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// Agregar Lógica para enviar el formulario a un servidor
-		setFormSubmitted(true); // Cambia el estado a "formulario enviado"
+		
+		try {
+			// Enviar email al usuario
+			await emailjs.send(
+				'service_yme', // Service ID
+				'template_yme', // Template ID
+				{
+					to_email: formData.email,
+					to_name: formData.fullName,
+					message: formData.message,
+				},
+				'QH6mZtifRM8VaDIat' // Public Key
+			);
+
+			setFormSubmitted(true);
+		} catch (error) {
+			console.error('Error al enviar el email:', error);
+			alert('Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.');
+		}
 	};
 
 	return (
-		<>
+		<div className="bg-offCyan">
 			<NavBar />
 			<main className="flex-grow flex flex-col items-center justify-center p-4 space-y-8 max-w-screen-xl mx-auto">
 				{!formSubmitted ? (
@@ -45,7 +77,9 @@ const Ayuda = () => {
 								<input
 									type="text"
 									id="full-name"
-									name="full-name"
+									name="fullName"
+									value={formData.fullName}
+									onChange={handleChange}
 									className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
 									required
 								/>
@@ -61,6 +95,8 @@ const Ayuda = () => {
 									type="email"
 									id="email"
 									name="email"
+									value={formData.email}
+									onChange={handleChange}
 									className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
 									required
 								/>
@@ -75,6 +111,8 @@ const Ayuda = () => {
 								<textarea
 									id="message"
 									name="message"
+									value={formData.message}
+									onChange={handleChange}
 									rows="6"
 									className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-6 transition-colors duration-200 ease-in-out resize-none"
 									placeholder="Escribe tu mensaje aquí..."
@@ -85,7 +123,7 @@ const Ayuda = () => {
 								type="submit"
 								className="text-white font-semibold bg-myColor border-0 py-2 px-8 focus:outline-none hover:bg-myGray rounded text-lg hover:text-myColor"
 							>
-								Enviar
+								Enviar 
 							</button>
 							<p className="text-xs text-gray-500 mt-3">
 								Una vez leamos tu mensaje te responderemos lo antes posible.
@@ -110,7 +148,7 @@ const Ayuda = () => {
 				)}
 			</main>
 			<Footer />
-		</>
+		</div>
 	);
 };
 

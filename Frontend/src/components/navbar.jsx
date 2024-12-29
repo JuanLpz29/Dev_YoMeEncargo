@@ -12,8 +12,20 @@ const loggedIn = token ? true : false;
 const ProfileDropDown = (props) => {
 	const [state, setState] = useState(false);
 	const profileRef = useRef();
-
 	const navigate = useNavigate();
+
+	// Obtener el usuario del localStorage de manera segura
+	const getUser = () => {
+		const usuarioString = localStorage.getItem("usuario");
+		try {
+			return usuarioString ? JSON.parse(usuarioString) : null;
+		} catch (e) {
+			console.error("Error parsing user data:", e);
+			return null;
+		}
+	};
+
+	const usuario = getUser();
 
 	const handleLogout = () => {
 		localStorage.removeItem("token");
@@ -48,26 +60,28 @@ const ProfileDropDown = (props) => {
 					className="w-10 h-10 outline-none rounded-full ring-offset-2 ring-[#43a6e8] ring-2 flex items-center justify-center bg-gray-200"
 					onClick={() => setState(!state)}
 				>
-					{usuario?.imagen ? (
+					{usuario && usuario.imagen ? (
 						<img
 							src={usuario.imagen}
 							className="w-full h-full rounded-full"
-							alt={`${usuario.nombre} ${usuario.apellido}`}
+							alt={`${usuario.nombre || ''} ${usuario.apellido || ''}`}
 						/>
 					) : (
 						<span className="text-[#43a6e8] font-semibold">
-							{getInitials(usuario?.nombre, usuario?.apellido)}
+							{usuario ? getInitials(usuario.nombre, usuario.apellido) : ''}
 						</span>
 					)}
 				</button>
-				<div className="md:hidden lg:block">
-					<span className="block text-[#43a6e8]">
-						{usuario.nombre} {usuario.apellido}
-					</span>
-					<span className="block text-sm text-white">
-						{usuario.correo}
-					</span>
-				</div>
+				{usuario && (
+					<div className="md:hidden lg:block">
+						<span className="block text-[#43a6e8]">
+							{usuario.nombre} {usuario.apellido}
+						</span>
+						<span className="block text-sm text-white">
+							{usuario.correo}
+						</span>
+					</div>
+				)}
 			</div>
 			<ul
 				className={`md:bg-[#1E293B] top-12 right-0 mt-5 space-y-5 md:absolute md:border md:rounded-md md:text-sm md:w-52 md:shadow-md md:space-y-0 md:mt-0 ${
@@ -92,6 +106,7 @@ const ProfileDropDown = (props) => {
 
 const NavBar = () => {
 	const [state, setState] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	const navigation = [
 		// { title: "Contacto", path: "javascript:void(0)" },
@@ -110,6 +125,25 @@ const NavBar = () => {
 		document.addEventListener("click", handleClickOutside);
 		return () => {
 			document.removeEventListener("click", handleClickOutside);
+		};
+	}, []);
+
+	useEffect(() => {
+		// Verificar autenticación inicial
+		const checkAuth = () => {
+			const token = localStorage.getItem('token');
+			setIsAuthenticated(!!token);
+		};
+
+		// Verificar al montar el componente
+		checkAuth();
+
+		// Escuchar cambios en localStorage
+		window.addEventListener('storage', checkAuth);
+
+		// Cleanup
+		return () => {
+			window.removeEventListener('storage', checkAuth);
 		};
 	}, []);
 
@@ -162,7 +196,7 @@ const NavBar = () => {
 							);
 						})}
 					</ul>
-					{!loggedIn ? (
+					{!isAuthenticated ? (
 						<div className="flex-1 gap-x-6 items-center justify-end py-6 space-y-6 md:flex md:space-y-0 md:mt-0">
 							<a
 								href="/login"
@@ -198,7 +232,7 @@ const NavBar = () => {
 										href="javascript:void(0)"
 										className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-[#43a6e8] hover:bg-white hover:text-[#43a6e8] active:bg-gray-900 rounded-full md:inline-flex"
 									>
-										Soy Mecánico
+										<a href="../inspecciones">Soy Mecánico</a>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 20 20"

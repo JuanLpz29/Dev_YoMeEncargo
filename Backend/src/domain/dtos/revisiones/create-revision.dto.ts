@@ -28,17 +28,25 @@ export class CreateRevisionDto {
         const id_reserva = +props.id_reserva;
         const { reporte, comentario } = props;
 
-        console.log(props);
+        console.log("props >>>", props);
 
-        if (!id_mecanico || !id_reserva || !reporte || !comentario) {
+        if (!id_mecanico || !id_reserva || !reporte) {
+            console.log("No se enviaron todos los campos correctamente");
             return ['No se enviaron todos los campos correctamente', undefined];
         }
 
+        if (!comentario) {
+            console.log("No se envio el comentario");
+            return ['No se envio el comentario', undefined];
+        }
+
         if (isNaN(id_mecanico)) {
+            console.log("ID de mecánico inválido");
             return ['ID de mecánico inválido', undefined];
         }
 
         if (isNaN(id_reserva)) {
+            console.log("ID de reserva inválido");
             return ['ID de reserva inválido', undefined];
         }
 

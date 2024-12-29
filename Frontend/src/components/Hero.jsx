@@ -1,6 +1,8 @@
 import { RightArrowIcon } from "../assets/icons";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+	const navigate = useNavigate();
 
 	const handleScrollToFAQs = (e) => {
 		e.preventDefault();
@@ -9,6 +11,12 @@ const Hero = () => {
 			faqs.scrollIntoView({ behavior: "smooth" });
 		}
 	}
+
+	// Verificar si el usuario está logueado
+	const isLoggedIn = () => {
+		return localStorage.getItem("token") !== null;
+	}
+
 	return (
 		<>
 			<section className="py-28">
@@ -27,12 +35,16 @@ const Hero = () => {
 						al comprar vehículos usados. 
 						</p>
 						<div className="items-center gap-x-3 space-y-3 sm:flex sm:space-y-0">
-							<a
-								href="/listamech"
-								className="block py-2 px-4 text-center text-white font-medium bg-myColor duration-150 hover:bg-myGray hover:text-myColor rounded-lg shadow-lg hover:shadow-none"
+							<button
+								onClick={() => navigate("/mecanicos")}
+								disabled={!isLoggedIn()}
+								className={`block py-2 px-4 text-center font-medium rounded-lg shadow-lg 
+									${isLoggedIn() 
+										? 'text-white bg-myColor hover:bg-myGray hover:text-myColor hover:shadow-none duration-150' 
+										: 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
 							>
 								Ver mecánicos disponibles
-							</a>
+							</button>
 							<a
 								href="#faqs"
 								onClick={handleScrollToFAQs}
@@ -41,7 +53,13 @@ const Hero = () => {
 								¿Qué es YoMeEncargo?
 								<RightArrowIcon />
 							</a>
+ 
 						</div>
+						{!isLoggedIn() && (
+							<h1 className="text-sm text-[#43a6e8] font-small font-semibold">
+								Debes iniciar sesión para ver a los mecánicos disponibles
+							</h1>
+						)}
 					</div>
 					<div className="flex-none mt-14 md:mt-0 md:max-w-xl">
 						<img

@@ -8,10 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#FFFFFF', //blanco
         myGray: '#1E293B',  //gris oscuro del navbar, etc.
         myColor: '#43a6e8', // color botones y letritas del logo
-        offCyan: '#E4F5F5', //light cyan background
+        offCyan: '#c7e5ed', //light cyan background
       },
       backgroundImage: {
         'close-menu': "url('img/icon-close.svg')",
@@ -20,6 +19,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
+  variants: {
+    extend: {
+        display: ['print']
+    },
+  },
 }
 

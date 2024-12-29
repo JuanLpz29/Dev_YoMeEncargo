@@ -16,6 +16,8 @@ export class RevisionesRoutes {
         router.post('/', revisionesController.createRevision);
         router.put('/:id', revisionesController.updateRevision);
         router.delete('/:id', revisionesController.deleteRevision);
+        router.get('/revisiones/compartir/:id', revisionesController.getRevisionParaCompartir);
+        router.post('/revisiones', revisionesController.saveReport);
 
         return router;
     }

@@ -55,10 +55,16 @@ const LoginPage = () => {
         console.log("Usuario logueado:", result);
 
         if (result.token) {
+          // Guardamos la información del usuario y el token
           localStorage.setItem('usuario', JSON.stringify(result.user));
           localStorage.setItem('token', result.token);
+          
+          // Forzamos un rerender del navbar actualizando el localStorage
+          const event = new Event('storage');
+          window.dispatchEvent(event);
+          
+          navigate("/");
         }
-        navigate("/");
       } catch (error) {
         console.error("Error al iniciar sesión:", error);
       }
@@ -81,10 +87,9 @@ const LoginPage = () => {
             <div className="flex justify-center mb-4">
             <img
                 src="img/logoyme-secondary.svg"
-                width={240}
-                height={50}
+                width={360}
+                height={80}
                 alt="YoMeEncargo logo"
-                //className="filter invert grayscale"
               />
             </div>
             <h2 className="text-3xl font-bold text-gray-900">¡Bienvenido a Yo Me Encargo!</h2>
@@ -102,7 +107,7 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Correo electrónico"
-                  className={`w-full px-4 py-2 bg-gray-50 border rounded-md focus:ring-2 focus:ring-myColor focus:border-transparent ${
+                  className={`w-full px-4 py-2 bg-gray-50 text-gray-900 border border-myColor rounded-md focus:ring-2 focus:ring-myColor focus:border-transparent ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -115,7 +120,7 @@ const LoginPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Contraseña"
-                  className={`w-full px-4 py-2 bg-gray-50 border rounded-md focus:ring-2 focus:ring-myColor focus:border-transparent ${
+                  className={`w-full px-4 py-2 bg-gray-50 text-gray-900 border border-myColor rounded-md focus:ring-2 focus:ring-myColor focus:border-transparent ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />

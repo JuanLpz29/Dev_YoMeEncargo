@@ -35,7 +35,7 @@ export class Server {
         this.app.use(this.routes);
 
         //* Public folder
-        this.app.use(express.static(this.public_path));
+        this.app.use(express.static(path.join(__dirname, '../../public')));
 
         this.app.get('*', (req, res) => {
             const indexPath = path.join(__dirname + `/../../${this.public_path}/index.html`);

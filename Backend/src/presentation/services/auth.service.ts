@@ -1,5 +1,4 @@
-
-import { JwtAdapter, bcryptAdapter, envs } from '../../config';
+import { JwtAdapter, bcryptAdapter, envs, emailConfig } from '../../config';
 import { prisma, RolEnum, ServicioEnum, PagoEnum } from '../../data/'
 import { RegisterUserDto, LoginUserDto, CustomError, UsuarioEntity } from '../../domain/'
 
@@ -16,14 +15,24 @@ export class AuthService {
 
         const { nombre, apellido, celular, correo, contrasena } = registerUserDto;
 
-        const existUser = await prisma.usuario.findFirst({
+        const existUserEmail = await prisma.usuario.findFirst({
             where: {
                 correo: correo
             }
         });
 
-        if (existUser) {
+        if (existUserEmail) {
             throw CustomError.badRequest('El correo ya está en uso');
+        }
+
+        const existUserPhone = await prisma.usuario.findFirst({
+            where: {
+                celular: celular
+            }
+        });
+
+        if (existUserPhone) {
+            throw CustomError.badRequest('El número de celular ya está registrado');
         }
 
         try {
@@ -39,7 +48,7 @@ export class AuthService {
                 }
             });
 
-            // TODO: Enviar el correo de validación (simulado)
+            await emailConfig.sendWelcomeEmail(correo, nombre);
 
             const { contrasena: _, ...usuarioEntity } = newContribuyente;
 

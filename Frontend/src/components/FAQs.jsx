@@ -107,22 +107,24 @@ const FAQs = () => {
 	];
 
 	return (
-		<section id ="faqs" className="bg-offCyan leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-4 w-full">
-			<div className="space-y-3 text-center">
-				<h1 className="text-3xl text-gray-800 font-semibold">
-					Preguntas Frecuentes
-				</h1>
-				<p className="text-gray-600 max-w-lg mx-auto text-lg">
-					Encuentra aquí las respuestas a las preguntas más frecuentes
-					que nuestros usuarios suelen tener.
-				</p>
-			</div>
-			<div className="mt-14 max-w-2xl mx-auto">
-				{faqsList.map((item, idx) => (
-					<FaqsCard key={idx} idx={idx} faqsList={item} />
-				))}
-			</div>
-		</section>
+		<div className="bg-offCyan">
+			<section id ="faqs" className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-4 w-full">
+				<div className="space-y-3 text-center">
+					<h1 className="text-3xl text-gray-800 font-semibold">
+						Preguntas Frecuentes
+					</h1>
+					<p className="text-gray-600 max-w-lg mx-auto text-lg">
+						Encuentra aquí las respuestas a las preguntas más frecuentes
+						que nuestros usuarios suelen tener.
+					</p>
+				</div>
+				<div className="mt-14 max-w-2xl mx-auto">
+					{faqsList.map((item, idx) => (
+						<FaqsCard key={idx} idx={idx} faqsList={item} />
+					))}
+				</div>
+			</section>
+		</div>
 	);
 };
 

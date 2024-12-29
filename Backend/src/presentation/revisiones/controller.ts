@@ -20,8 +20,9 @@ export class RevisionesController {
     constructor() { }
 
     public createRevision = async (req: Request, res: Response) => {
-        console.log(req.body);
+        console.log("req.body >>>", req.body);
         const [error, createRevisionDto] = CreateRevisionDto.create(req.body);
+        console.log("createRevisionDto >>>", createRevisionDto);
         if (error) return res.status(400).json({ error });
 
         const newRevision = await prisma.revision.create({
@@ -84,4 +85,68 @@ export class RevisionesController {
 
         return res.json({ message: 'Revisión eliminada' });
     };
+
+    async getRevisionParaCompartir(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const revision = await prisma.revision.findUnique({
+                where: { id: parseInt(id) },
+                include: {
+                    mecanico: {
+                        include: {
+                            usuario: true
+                        }
+                    },
+                    reserva: {
+                        include: {
+                            vehiculo: true
+                        }
+                    }
+                }
+            });
+
+            if (!revision) {
+                return res.status(404).json({ error: 'Revisión no encontrada' });
+            }
+
+            // Formatear los datos que quieres compartir
+            const datosCompartidos = {
+                fecha: revision.reserva.fecha,
+                mecanico: `${revision.mecanico.usuario.nombre} ${revision.mecanico.usuario.apellido}`,
+                vehiculo: `${revision.reserva.vehiculo.marca} ${revision.reserva.vehiculo.modelo}`,
+                reporte: revision.reporte,
+                comentario: revision.comentario
+            };
+
+            return res.json(datosCompartidos);
+        } catch (error) {
+            console.error('Error:', error);
+            return res.status(500).json({ error: 'Error al obtener la revisión' });
+        }
+    }
+
+    async saveReport(req: Request, res: Response) {
+        try {
+            const reportData = req.body;
+            
+            // Crear la revisión en la base de datos
+            const revision = await prisma.revision.create({
+                data: {
+                    id_mecanico: reportData.id_mecanico, // Asegúrate de enviar esto desde el frontend
+                    id_reserva: reportData.id_reserva,   // Asegúrate de enviar esto desde el frontend
+                    reporte: JSON.stringify(reportData),  // Guardamos todo el reporte como JSON string
+                    comentario: reportData.comentarios || '',
+                    pago: 'PENDIENTE'
+                }
+            });
+
+            return res.status(201).json({
+                id: revision.id,
+                message: 'Reporte guardado exitosamente'
+            });
+        } catch (error) {
+            console.error('Error al guardar el reporte:', error);
+            return res.status(500).json({ error: 'Error al guardar el reporte' });
+        }
+    }
 }

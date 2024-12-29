@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 import { createUsuario } from "../actions/yo-me-encargo";
+import ModalTerminos from '../components/ModalTerminos';
 
 const RegisterPage = () => {
 	const [formData, setFormData] = useState({
@@ -17,6 +18,10 @@ const RegisterPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
+	const [modalTerminos, setModalTerminos] = useState({
+		isOpen: false,
+		type: 'terminos'
+	});
 
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -39,8 +44,13 @@ const RegisterPage = () => {
 			newErrors.firstName = "El nombre es requerido";
 		if (!formData.lastName.trim())
 			newErrors.lastName = "El apellido es requerido";
-		if (!formData.phone.trim())
+		if (!formData.phone.trim()) {
 			newErrors.phone = "El número de celular es requerido";
+		} else if (!formData.phone.startsWith('9')) {
+			newErrors.phone = "El número debe comenzar con 9";
+		} else if (formData.phone.length !== 9) {
+			newErrors.phone = "El número debe tener 9 dígitos";
+		}
 		if (!formData.email.trim())
 			newErrors.email = "El correo electrónico es requerido";
 		if (!formData.password)
@@ -63,23 +73,42 @@ const RegisterPage = () => {
 				const usuarioData = {
 					nombre: formData.firstName,
 					apellido: formData.lastName,
-					celular: formData.phone,
+					celular: `+56${formData.phone}`,
 					correo: formData.email,
 					contrasena: formData.password,
 				};
 
-				const result = await createUsuario(usuarioData);
-				console.log("Usuario registrado exitosamente:", result);
-
-				// Guarda el token en localStorage
-				if (result.token) {
-					localStorage.setItem("token", result.token);
-				}
+				await createUsuario(usuarioData);
 				navigate("/login");
+
 			} catch (error) {
-				console.error("Error al registrar el usuario:", error);
+				// Manejar los mensajes de error específicos
+				const errorMessage = error.message;
+				if (errorMessage.includes('correo')) {
+					setErrors(prev => ({
+						...prev,
+						email: "Este correo ya está en uso"
+					}));
+				} else if (errorMessage.includes('celular')) {
+					setErrors(prev => ({
+						...prev,
+						phone: "Este número de teléfono ya está registrado"
+					}));
+				} else {
+					setErrors(prev => ({
+						...prev,
+						general: "Error al registrar el usuario"
+					}));
+				}
 			}
 		}
+	};
+
+	const handleOpenModal = (type) => {
+		setModalTerminos({
+			isOpen: true,
+			type: type
+		});
 	};
 
 	return (
@@ -90,15 +119,15 @@ const RegisterPage = () => {
 			</div>
 
 			{/* Right Section with Registration Form */}
-			<div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
-				<div className="max-w-md w-full">
+			<div className="  w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
+				<div className="p-4 bg-gray-100 rounded-md max-w-md w-full">
 					<div className="flex justify-center mb-4">
 						<img
-							src="img/logoyme.svg"
-							width={240}
-							height={50}
+							src="img/logoyme-secondary.svg"
+							width={280}
+							height={80}
 							alt="YoMeEncargo logo"
-							className="filter invert grayscale"
+							className="bg-gray-200 rounded-md"
 						/>
 					</div>
 					<h2 className=" text-center text-3xl font-bold text-gray-900 mb-8">
@@ -114,7 +143,7 @@ const RegisterPage = () => {
 									value={formData.firstName}
 									onChange={handleChange}
 									placeholder="Ingresa tu nombre"
-									className={`w-full px-4 py-2 bg-gray-50 border rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.firstName
+									className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.firstName
 											? "border-red-500"
 											: "border-gray-300"
 										}`}
@@ -132,7 +161,7 @@ const RegisterPage = () => {
 									value={formData.lastName}
 									onChange={handleChange}
 									placeholder="Ingresa tu apellido"
-									className={`w-full px-4 py-2 bg-gray-50 border rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.lastName
+									className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.lastName
 											? "border-red-500"
 											: "border-gray-300"
 										}`}
@@ -146,17 +175,20 @@ const RegisterPage = () => {
 						</div>
 
 						<div>
-							<input
-								type="tel"
-								name="phone"
-								value={formData.phone}
-								onChange={handleChange}
-								placeholder="+569 75 66 65 62"
-								className={`w-full px-4 py-2 bg-gray-50 border rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.phone
-										? "border-red-500"
-										: "border-gray-300"
-									}`}
-							/>
+							<div className="flex gap-2">
+								<div className="flex items-center gap-2 border rounded-md">
+									<span className="w-full text-center text-gray-600">+56</span>
+									<input
+										type="tel"
+										name="phone"
+										value={formData.phone}
+										onChange={handleChange}
+										placeholder="987654321"
+										maxLength={9}
+										className={`flex-1 px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.phone ? "border-red-500" : "border-gray-300"}`}
+									/>
+								</div>
+							</div>
 							{errors.phone && (
 								<p className="mt-1 text-xs text-red-500">
 									{errors.phone}
@@ -171,7 +203,7 @@ const RegisterPage = () => {
 								value={formData.email}
 								onChange={handleChange}
 								placeholder="ejemplo.email@gmail.com"
-								className={`w-full px-4 py-2 bg-gray-50 border rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.email
+								className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.email
 										? "border-red-500"
 										: "border-gray-300"
 									}`}
@@ -189,8 +221,9 @@ const RegisterPage = () => {
 								name="password"
 								value={formData.password}
 								onChange={handleChange}
-								placeholder="Ingresa una contraseña de 6 caracteres"
-								className={`w-full px-4 py-2 bg-gray-50 border rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.password
+								maxLength={8}
+								placeholder="Ingresa una contraseña de máximo 8 caracteres"
+								className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.password
 										? "border-red-500"
 										: "border-gray-300"
 									}`}
@@ -226,19 +259,21 @@ const RegisterPage = () => {
 							<div className="ml-3 text-sm">
 								<label className="text-gray-900">
 									Al registrarme, acepto los{" "}
-									<a
-										href="#"
+									<button
+										type="button"
+										onClick={() => handleOpenModal('terminos')}
 										className="text-myColor hover:underline"
 									>
 										Términos de uso
-									</a>{" "}
+									</button>{" "}
 									&{" "}
-									<a
-										href="#"
+									<button
+										type="button"
+										onClick={() => handleOpenModal('privacidad')}
 										className="text-myColor hover:underline"
 									>
 										Política de Privacidad
-									</a>
+									</button>
 								</label>
 								{errors.acceptTerms && (
 									<p className="mt-1 text-xs text-red-500">
@@ -255,14 +290,24 @@ const RegisterPage = () => {
 						>
 							Registrarme
 						</button>
+					<div className="flex items-center justify-center mt-4">
 						<button
+							type = "button"
 							onClick={() => navigate(-1)}
-							className="flex justify-center mt-10 bg-myColor text-white py-2 px-4 rounded-full hover:bg-myGray focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50"
+							className=" w-1/2 py-2 px-4 rounded-md bg-myColor text-white  hover:bg-myGray hover:text-myColor focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50"
 						>Volver
 						</button>
+					</div>
 					</form>
 				</div>
 			</div>
+
+			{/* Modal de Términos y Privacidad */}
+			<ModalTerminos
+				isOpen={modalTerminos.isOpen}
+				onClose={() => setModalTerminos({ ...modalTerminos, isOpen: false })}
+				type={modalTerminos.type}
+			/>
 		</div>
 	);
 };

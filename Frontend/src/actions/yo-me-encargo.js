@@ -34,11 +34,12 @@ export const createUsuario = async (props) => {
 			}
 		);
 
+		const data = await response.json();
+
 		if (!response.ok) {
-			throw new Error("Error al registrar el usuario");
+			throw new Error(data.error || "Error al registrar el usuario");
 		}
 
-		const data = await response.json();
 		return data;
 	} catch (error) {
 		console.error("Error en la solicitud:", error);
