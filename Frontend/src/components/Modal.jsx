@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import ModalMecanico from "./ModalMecanico";
 import ModalFormulario from "./ModalFormulario";
 import ModalReservation from "./ModalReservation";
@@ -8,6 +9,7 @@ import ModalVoucher from './ModalVoucher';
 const Modal = ({ isOpen, onClose, type: initialType, props }) => {
     const [currentType, setCurrentType] = useState(initialType);
     const [selectedTime, setSelectedTime] = useState(null); // Estado para selectedTime
+    const [vehiculo, setVehiculo] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(null);
 
     // Reiniciar el tipo cuando se cierra el modal
@@ -24,7 +26,8 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
         setCurrentType("formulario");
     };
 
-    const handleSwitchToReservation = () => {
+    const handleSwitchToReservation = (data) => {
+        setVehiculo(data.vehiculo);
         setCurrentType("reservation");
     };
 
@@ -48,46 +51,50 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
             case "mecanico":
                 return (
                     <ModalMecanico 
-                        {...props} 
+                        mecanico={props.mecanico}
+                        selectedDate={props.selectedDate}
                         onClose={onClose}
                         onReservar={handleSwitchToForm}
                     />
                 );
             case "formulario":
                 return (
-                    <ModalFormulario 
-                        {...props}
-                        onBack={handleBack}
-                        onNext={handleSwitchToReservation}
-                        mechanic={props.mechanic}
-                        selectedDate={props.selectedDate}
-                        selectedTime={selectedTime}
-                    />
-                );
+					<ModalFormulario
+						onBack={handleBack}
+						onNext={handleSwitchToReservation}
+						mechanic={props.mecanico}
+						selectedDate={props.selectedDate}
+						selectedTime={selectedTime}
+					/>
+				);
             case "reservation":
                 return (
-                    <ModalReservation 
-                        {...props}
-                        onBack={() => setCurrentType("formulario")}
-                        onNext={handleSwitchToPayment}
-                        selectedTime={selectedTime}
-                    />
-                );
+					<ModalReservation
+						onBack={() => setCurrentType("formulario")}
+						onNext={handleSwitchToPayment}
+						selectedTime={selectedTime}
+						mecanico={props.mecanico}
+						selectedDate={props.selectedDate}
+					/>
+				);
             case "payment":
                 return (
                     <ModalPayment 
-                        {...props}
                         onBack={() => setCurrentType("reservation")}
                         onNext={handleSwitchToVoucher}
                         selectedTime={selectedTime}
+                        mecanico={props.mecanico}
+                        selectedDate={props.selectedDate}
+                        vehiculo={vehiculo}
                     />
                 );
             case "voucher":
                 return (
                     <ModalVoucher 
-                        {...props}
                         selectedTime={selectedTime}
                         paymentMethod={paymentMethod}
+                        mecanico={props.mecanico}
+                        selectedDate={props.selectedDate}
                     />
                 );
             default:
@@ -109,5 +116,13 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
         </div>
     );
 };
+
+Modal.propTypes = {
+	isOpen: PropTypes.bool.isRequired,
+	onClose: PropTypes.func.isRequired,
+	type: PropTypes.string.isRequired,
+	props: PropTypes.object,
+};
+
 
 export default Modal;

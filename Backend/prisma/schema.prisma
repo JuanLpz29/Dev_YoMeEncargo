@@ -38,7 +38,8 @@ model Usuario {
   contrasena String @db.VarChar
   rol        Rol    @default(USUARIO)
 
-  mecanico Mecanico?
+  mecanico  Mecanico?
+  vehiculos Vehiculo[]
 }
 
 model Vehiculo {
@@ -50,6 +51,8 @@ model Vehiculo {
   id_usuario Int    @db.Integer
 
   reservas Reserva[]
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id])
 }
 
 model Reserva {
@@ -80,12 +83,12 @@ model Mecanico {
 }
 
 model Revision {
-  id          Int    @id @default(autoincrement())
-  id_mecanico Int    @db.Integer
-  id_reserva  Int    @db.Integer
-  reporte     String @db.VarChar
-  comentario  String @db.Text
-  pago        Pago   @default(PENDIENTE)
+  id          Int     @id @default(autoincrement())
+  id_mecanico Int     @db.Integer
+  id_reserva  Int     @db.Integer
+  reporte     String? @db.VarChar
+  comentario  String? @db.Text
+  pago        Pago    @default(PENDIENTE)
 
   mecanico Mecanico @relation(fields: [id_mecanico], references: [id])
   reserva  Reserva  @relation(fields: [id_reserva], references: [id])

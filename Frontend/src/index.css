@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
-    p{
+@layer base {
+    p {
         @apply mb-3
     }
 }
 
-body{
+body {
     color: rgb(202, 196, 244);
 }
 
@@ -19,10 +19,9 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"] {
-    -moz-appearance: textfield; /* Para Firefox */
-    appearance: textfield; /* Propiedad estándar */
+    -moz-appearance: textfield;
+    /* Para Firefox */
+    appearance: textfield;
+    /* Propiedad estándar */
 }
-
-
-
 

@@ -1,20 +1,23 @@
 import { Route, Routes } from "react-router-dom";
 
-import HomePage from "./pages/Home";
-
-import Perfil from "./pages/perfil";
-import Ayuda from "./pages/ayuda";
-
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
+import HomePage from "./pages/Home";
+import Profile from "./pages/Profile";
+import Ayuda from "./pages/ayuda";
 import Mecanicos from "./pages/mecanicos";
 
 import Inspecciones from "./pages/VistaMecanico/inspecciones";
+import HeroMecanico from "./pages/VistaMecanico/HeroMecanico";
+import Reporte from "./pages/VistaMecanico/reporte";
+import PM from "./pages/VistaMecanico/PM";
 
 import NotFound from "./pages/NotFound";
 
-import Reporte from "./pages/VistaMecanico/reporte";
+
+
+
 
 function App() {
 	return (
@@ -40,7 +43,7 @@ function App() {
 
 					<Route 
 						path="/perfil" 
-						element={<Perfil></Perfil>}
+						element={<Profile></Profile>}
 					></Route>
 
 					<Route
@@ -61,6 +64,16 @@ function App() {
 					<Route
 						path="/revision/compartir/:id"
 						element={<Reporte></Reporte>}
+					></Route>
+
+					<Route
+						path="/ProfileMecanico"
+						element={<PM></PM>}
+					></Route>
+
+					<Route
+						path="/HeroMecanico"
+						element={<HeroMecanico></HeroMecanico>}
 					></Route>
 
 					<Route path="*" element={<NotFound></NotFound>}></Route>

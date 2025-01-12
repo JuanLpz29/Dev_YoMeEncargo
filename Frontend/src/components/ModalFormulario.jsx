@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { createVehiculo } from "../actions/yo-me-encargo";
 
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+
 const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
     const [formData, setFormData] = useState({
         make: "",
         model: "",
         licensePlate: "",
         year: "",
+        location: "",
     });
 
     const [errors, setErrors] = useState({});
@@ -50,12 +53,21 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
 
     const validateForm = () => {
         const newErrors = {};
+        const symbolAndEmojiRegex = /[^\w\s-]|[\u{1F600}-\u{1F64F}]/gu;
+
         if (!formData.make.trim()) newErrors.make = "La marca es requerida";
         if (!formData.model.trim()) newErrors.model = "El modelo es requerido";
         if (!formData.year.trim()) newErrors.year = "El año es requerido";
         if (!formData.licensePlate.trim())
             newErrors.licensePlate = "La patente es requerida";
+        if(!formData.location.trim()) newErrors.location = "La dirección es requerida";
 
+        Object.keys(formData).forEach((key) => {
+            if (symbolAndEmojiRegex.test(formData[key])) {
+                newErrors[key] = "No se permiten caracteres especiales o emojis.";
+            }
+        });
+        
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -65,16 +77,16 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
         if (validateForm()) {
             try {
                 const vehiculoData = {
-                    id_usuario: 1, // Cambia esto según tu implementación
+                    id_usuario: usuario.id,
                     marca: formData.make,
                     modelo: formData.model,
                     anio: formData.year,
                     patente: formData.licensePlate,
+                    location: formData.location,
                 };
 
-                await createVehiculo(vehiculoData);
                 onNext({
-                    vehiculo: formData,
+                    vehiculo: vehiculoData,
                     mechanic: mechanic,
                     selectedDate: selectedDate
                 });
@@ -92,6 +104,23 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
                 </h2>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <div>
+                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                        Dirección de la reserva
+                    </label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleChange}
+                        placeholder="Ej: Avenida Alemania 784"
+                        className={`w-full p-2 text-myGray border border-myColor focus:border-blue-400 rounded-md ${
+                            errors.location ? "border-red-500" : "border-gray-300"
+                        }`}
+                    />
+                    {errors.location && <p className="text-xs text-red-500">{errors.location}</p>}
+                </div>
                 <div>
                     <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">
                         Marca

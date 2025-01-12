@@ -2,15 +2,20 @@ import { useState, useRef, useEffect } from "react";
 import { CloseMenuIcon, OpenMenuIcon } from "../assets/icons";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import ModalPM from "../components/ModalPM";
+import { getMecanico } from "../actions/yo-me-encargo";
+const API_URL = "http://localhost:3000/api";
 
 const usuarioString = localStorage.getItem("usuario");
 const usuario = JSON.parse(usuarioString);
 console.log("usuario >>>", usuario);
 const token = localStorage.getItem("token");
+console.log("token >>>", token);
 const loggedIn = token ? true : false;
 
 const ProfileDropDown = (props) => {
 	const [state, setState] = useState(false);
+	const [datosMecanico, setDatosMecanico] = useState(null);
 	const profileRef = useRef();
 	const navigate = useNavigate();
 
@@ -27,6 +32,21 @@ const ProfileDropDown = (props) => {
 
 	const usuario = getUser();
 
+	useEffect(() => {
+		const obtenerDatosMecanico = async () => {
+			if (usuario?.rol === "MECANICO") {
+				try {
+					const data = await getMecanico(usuario.id);
+					setDatosMecanico(data);
+				} catch (error) {
+					console.error("Error al obtener datos del mecánico:", error);
+				}
+			}
+		};
+
+		obtenerDatosMecanico();
+	}, [usuario]);
+
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("usuario");
@@ -34,10 +54,16 @@ const ProfileDropDown = (props) => {
 		navigate("/");
 	};
 
-	const navigation = [
-		{ title: "Perfil", path: "/perfil" },
-		{ title: "Salir", path: "/", onClick: handleLogout },
-	];
+	const navigation =
+		usuario?.rol === "MECANICO"
+			? [
+					{ title: "Perfil", path: "/ProfileMecanico" },
+					{ title: "Salir", path: "/", onClick: handleLogout },
+			  ]
+			: [
+					{ title: "Perfil", path: "/perfil" },
+					{ title: "Salir", path: "/", onClick: handleLogout },
+			  ];
 
 	useEffect(() => {
 		const handleDropDown = (e) => {
@@ -60,15 +86,23 @@ const ProfileDropDown = (props) => {
 					className="w-10 h-10 outline-none rounded-full ring-offset-2 ring-[#43a6e8] ring-2 flex items-center justify-center bg-gray-200"
 					onClick={() => setState(!state)}
 				>
-					{usuario && usuario.imagen ? (
+					{usuario?.rol === "MECANICO" && datosMecanico?.url_foto ? (
+						<img
+							src={`${API_URL}/files/fotos/${datosMecanico.url_foto}`}
+							className="w-full h-full rounded-full object-cover"
+							alt={`${usuario.nombre || ""} ${usuario.apellido || ""}`}
+						/>
+					) : usuario && usuario.imagen ? (
 						<img
 							src={usuario.imagen}
 							className="w-full h-full rounded-full"
-							alt={`${usuario.nombre || ''} ${usuario.apellido || ''}`}
+							alt={`${usuario.nombre || ""} ${usuario.apellido || ""}`}
 						/>
 					) : (
 						<span className="text-[#43a6e8] font-semibold">
-							{usuario ? getInitials(usuario.nombre, usuario.apellido) : ''}
+							{usuario
+								? getInitials(usuario.nombre, usuario.apellido)
+								: ""}
 						</span>
 					)}
 				</button>
@@ -107,6 +141,19 @@ const ProfileDropDown = (props) => {
 const NavBar = () => {
 	const [state, setState] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [userRole, setUserRole] = useState(null);
+
+	const openModal = () => setIsModalOpen(true);
+	const closeModal = () => setIsModalOpen(false);
+
+	useEffect(() => {
+		const usuarioString = localStorage.getItem("usuario");
+		if (usuarioString) {
+			const usuario = JSON.parse(usuarioString);
+			setUserRole(usuario.rol);
+		}
+	}, []);
 
 	const navigation = [
 		// { title: "Contacto", path: "javascript:void(0)" },
@@ -131,7 +178,7 @@ const NavBar = () => {
 	useEffect(() => {
 		// Verificar autenticación inicial
 		const checkAuth = () => {
-			const token = localStorage.getItem('token');
+			const token = localStorage.getItem("token");
 			setIsAuthenticated(!!token);
 		};
 
@@ -139,11 +186,11 @@ const NavBar = () => {
 		checkAuth();
 
 		// Escuchar cambios en localStorage
-		window.addEventListener('storage', checkAuth);
+		window.addEventListener("storage", checkAuth);
 
 		// Cleanup
 		return () => {
-			window.removeEventListener('storage', checkAuth);
+			window.removeEventListener("storage", checkAuth);
 		};
 	}, []);
 
@@ -227,31 +274,29 @@ const NavBar = () => {
 						<div className="flex-1 flex items-center justify-between md:justify-end space-x-2 sm:space-x-6">
 							<ProfileDropDown className="py-8 md:py-0" />
 							{usuario?.rol !== "MECANICO" && (
-								<div>
-									<a
-										href="javascript:void(0)"
-										className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-[#43a6e8] hover:bg-white hover:text-[#43a6e8] active:bg-gray-900 rounded-full md:inline-flex"
+								<div className="flex items-center justify-center gap-x-1 py-2 px-4 text-white font-medium bg-[#43a6e8] hover:bg-white hover:text-[#43a6e8] active:bg-gray-900 rounded-full md:inline-flex">
+									<button onClick={openModal}>
+										Soy Mecánico
+									</button>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										className="w-5 h-5"
 									>
-										<a href="../inspecciones">Soy Mecánico</a>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-											className="w-5 h-5"
-										>
-											<path
-												fillRule="evenodd"
-												d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									</a>
+										<path
+											fillRule="evenodd"
+											d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+											clipRule="evenodd"
+										/>
+									</svg>
 								</div>
 							)}
 						</div>
 					)}
 				</div>
 			</div>
+			<ModalPM isOpen={isModalOpen} onClose={closeModal} />
 		</nav>
 	);
 };

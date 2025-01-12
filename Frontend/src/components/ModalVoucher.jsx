@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const ModalVoucher = ({ mechanic, selectedDate, selectedTime, price = "30.000", paymentMethod }) => {
+const ModalVoucher = ({ mecanico, selectedDate, selectedTime, price = "30.000", paymentMethod }) => {
     const navigate = useNavigate();
     const voucherRef = useRef(null);
     
@@ -89,7 +89,7 @@ const ModalVoucher = ({ mechanic, selectedDate, selectedTime, price = "30.000", 
                     <div className="space-y-4">
                         <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                             <span className="text-myGray">Mecánico</span>
-                            <span className="font-semibold">{mechanic?.name}</span>
+                            <span className="font-semibold">{mecanico.usuario.nombre} {mecanico.usuario.apellido}</span>
                         </div>
 
                         <div className="flex justify-between items-center border-b border-gray-200 pb-2">

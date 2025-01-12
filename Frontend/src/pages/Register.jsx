@@ -119,15 +119,15 @@ const RegisterPage = () => {
 			</div>
 
 			{/* Right Section with Registration Form */}
-			<div className="  w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
-				<div className="p-4 bg-gray-100 rounded-md max-w-md w-full">
+			<div className="  w-full md:w-1/2 flex items-center justify-center p-8 bg-offCyan">
+				<div className="p-4 bg-white rounded-lg max-w-md w-full">
 					<div className="flex justify-center mb-4">
 						<img
 							src="img/logoyme-secondary.svg"
 							width={280}
 							height={80}
 							alt="YoMeEncargo logo"
-							className="bg-gray-200 rounded-md"
+							className="rounded-lg"
 						/>
 					</div>
 					<h2 className=" text-center text-3xl font-bold text-gray-900 mb-8">
@@ -144,8 +144,8 @@ const RegisterPage = () => {
 									onChange={handleChange}
 									placeholder="Ingresa tu nombre"
 									className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.firstName
-											? "border-red-500"
-											: "border-gray-300"
+										? "border-red-500"
+										: "border-gray-300"
 										}`}
 								/>
 								{errors.firstName && (
@@ -162,8 +162,8 @@ const RegisterPage = () => {
 									onChange={handleChange}
 									placeholder="Ingresa tu apellido"
 									className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.lastName
-											? "border-red-500"
-											: "border-gray-300"
+										? "border-red-500"
+										: "border-gray-300"
 										}`}
 								/>
 								{errors.lastName && (
@@ -176,8 +176,10 @@ const RegisterPage = () => {
 
 						<div>
 							<div className="flex gap-2">
-								<div className="flex items-center gap-2 border rounded-md">
-									<span className="w-full text-center text-gray-600">+56</span>
+								<div className="flex items-center border border-myColor rounded-md bg-gray-50 focus-within:ring-2 focus-within:ring-myGray">
+									<span className="p-2 text-gray-700 bg-gray-50 border-r border-myColor rounded-l-md flex-shrink-0">
+										+56
+									</span>
 									<input
 										type="tel"
 										name="phone"
@@ -185,7 +187,7 @@ const RegisterPage = () => {
 										onChange={handleChange}
 										placeholder="987654321"
 										maxLength={9}
-										className={`flex-1 px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.phone ? "border-red-500" : "border-gray-300"}`}
+										className={`flex-1 px-4 py-2 bg-gray-50 text-gray-900 focus:outline-none focus:ring-myColor focus:border-transparent rounded-r-md ${errors.phone ? "border-red-500" : "border-gray-300"}`}
 									/>
 								</div>
 							</div>
@@ -204,8 +206,8 @@ const RegisterPage = () => {
 								onChange={handleChange}
 								placeholder="ejemplo.email@gmail.com"
 								className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.email
-										? "border-red-500"
-										: "border-gray-300"
+									? "border-red-500"
+									: "border-gray-300"
 									}`}
 							/>
 							{errors.email && (
@@ -224,8 +226,8 @@ const RegisterPage = () => {
 								maxLength={8}
 								placeholder="Ingresa una contraseña de máximo 8 caracteres"
 								className={`w-full px-4 py-2 bg-gray-50 border border-myColor rounded-md text-gray-900 focus:ring-2 focus:ring-myColor focus:border-transparent ${errors.password
-										? "border-red-500"
-										: "border-gray-300"
+									? "border-red-500"
+									: "border-gray-300"
 									}`}
 							/>
 							<button
@@ -286,18 +288,18 @@ const RegisterPage = () => {
 						<button
 							type="submit"
 							className="w-full py-2 px-4 bg-myColor hover:bg-myGray text-white hover:text-myColor font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50 transition-colors"
-						
+
 						>
 							Registrarme
 						</button>
-					<div className="flex items-center justify-center mt-4">
-						<button
-							type = "button"
-							onClick={() => navigate(-1)}
-							className=" w-1/2 py-2 px-4 rounded-md bg-myColor text-white  hover:bg-myGray hover:text-myColor focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50"
-						>Volver
-						</button>
-					</div>
+						<div className="flex items-center justify-center mt-4">
+							<button
+								type="button"
+								onClick={() => navigate(-1)}
+								className=" w-1/2 py-2 px-4 rounded-md bg-myColor text-white  hover:bg-myGray hover:text-myColor focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50"
+							>Volver
+							</button>
+						</div>
 					</form>
 				</div>
 			</div>

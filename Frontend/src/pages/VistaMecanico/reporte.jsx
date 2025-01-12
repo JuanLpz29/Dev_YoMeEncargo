@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { Save, Calendar, Gauge, Route, Share, Download } from 'lucide-react';
 import { GiCarDoor, GiCarWheel, GiCarSeat } from "react-icons/gi";
 import { MdCarCrash } from "react-icons/md";
@@ -8,6 +9,7 @@ import { PiEngineBold } from "react-icons/pi";
 import { IoColorFill } from "react-icons/io5";
 import { useParams } from 'react-router-dom';
 import { revisionService } from '../../services/revisionService';
+
 import DownloadLink from './ReportePDF';
 
 import NavBar from '../../components/navbar'
@@ -540,7 +542,7 @@ const InspeccionForm = () => {
                                 </div>
                                 <div className="space-y-2">
                                     <select
-                                        value={vehicleData.estadoFrenos.estado}
+                                        value={vehicleData.estadoNeumaticos.estado}
                                         onChange={(e) => handleTechnicalChange('estadoFrenos', 'estado', e.target.value)}
                                         className={`block w-full rounded-md border-gray-300 focus:border-myColor focus:ring-myColor ${!vehicleData.estadoFrenos.estado ? 'text-gray-400' : 'text-myGray'}`}
                                     >

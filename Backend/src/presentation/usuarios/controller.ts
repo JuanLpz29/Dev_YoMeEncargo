@@ -21,10 +21,12 @@ export class UsuariosController {
             where: { id }
         });
 
-        (usuario)
-            ? res.json(usuario)
-            : res.status(404).json({ error: 'Usuario no encontrado' });
-
+        if (usuario) {
+            const { contrasena, ...usuarioSinContrasena } = usuario;
+            return res.json(usuarioSinContrasena);
+        } else {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
     };
 
     public createUsuario = async (req: Request, res: Response) => {
@@ -44,22 +46,35 @@ export class UsuariosController {
     };
 
     public updateUsuario = async (req: Request, res: Response) => {
-        const id = +req.params.id;
-        const [error, updateUsuarioDto] = UpdateUsuarioDto.create({ id, ...req.body });
-        if (error) return res.status(400).json({ error });
+        try {
+            const id = +req.params.id;
+            const [error, updateUsuarioDto] = UpdateUsuarioDto.create({ id, ...req.body });
+            
+            if (error) {
+                return res.status(400).json({ error });
+            }
 
-        const usuario = await prisma.usuario.findFirst({
-            where: { id: updateUsuarioDto!.id }
-        });
+            const usuario = await prisma.usuario.findFirst({
+                where: { id: updateUsuarioDto!.id }
+            });
 
-        if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
 
-        const updatedUsuario = await prisma.usuario.update({
-            where: { id },
-            data: updateUsuarioDto!.values
-        });
+            const updatedUsuario = await prisma.usuario.update({
+                where: { id },
+                data: updateUsuarioDto!.values
+            });
 
-        res.json(updatedUsuario);
+            return res.json(updatedUsuario);
+            
+        } catch (error) {
+            return res.status(500).json({ 
+                error: 'Error al actualizar usuario',
+                message: (error as Error).message 
+            });
+        }
     };
 
     public deleteUsuario = async (req: Request, res: Response) => {

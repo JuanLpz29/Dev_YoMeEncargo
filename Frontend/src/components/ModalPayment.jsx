@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CreditCard, HandCoins } from 'lucide-react';
+import { createVehiculo, createReservation, createRevision } from "../actions/yo-me-encargo";
 
-const ModalPayment = ({ onBack, onNext, mechanic, selectedDate, selectedTime }) => {
+const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, vehiculo }) => {
     const [loading, setLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('credit');
 
     // Formatear la fecha y hora para mostrar
-    const formattedDate = selectedDate ? new Date(selectedDate + "T00:00:00").toLocaleDateString() : 'No seleccionada';
-    const formattedTime = selectedTime || 'No seleccionada';
-    const price = mechanic?.price || '30.000';
+    const formattedDate = selectedDate ? new Date(selectedDate + "T00:00:00").toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : 'No seleccionada';
+    const formattedTimeInit = selectedTime ? new Date(selectedDate + "T" + selectedTime).toISOString() : 'No seleccionada';
+    const formattedTimeEnd = selectedTime ? new Date(new Date(selectedDate + "T" + selectedTime).getTime() + 60 * 60 * 1000).toISOString() : 'No seleccionada';
 
-    const handleSimulatedPayment = () => {
+    const price = mecanico?.price || '30.000';
+
+    const handleSimulatedPayment = async () => {
         setLoading(true);
         // Simular un proceso de pago
-        setTimeout(() => {
+        setTimeout(async () => {
             setLoading(false);
-            // Redirigir a modalVoucher
-            onNext({ paymentMethod });
+
+            try {                
+                const nuevoVehiculo = await createVehiculo(vehiculo);
+                
+                const nuevaReserva = await createReservation({
+                    fecha: selectedDate,
+                    horaInicio: selectedTime,
+                    horaFin: new Date(new Date(selectedDate + "T" + selectedTime).getTime() + 60 * 60 * 1000).toISOString(),
+                    id_vehiculo: nuevoVehiculo.id,
+                    ubicacion: "Santiago, Chile",
+                });
+
+                const nuevaRevision = await createRevision({
+                    id_mecanico: mecanico.id,
+                    id_reserva: nuevaReserva.id,
+                });
+
+                // Redirigir a modalVoucher
+                onNext({ paymentMethod });
+            } catch (error) {
+                console.error("Error al crear el vehículo:", error);
+            }
         }, 2000);
     };
 
@@ -28,13 +51,13 @@ const ModalPayment = ({ onBack, onNext, mechanic, selectedDate, selectedTime }) 
             <div className="bg-offCyan p-4 rounded-md w-full mb-6 flex flex-col justify-center items-center">
                 
                 <p className="text-gray-700 mb-2">
-                    <strong>Mecánico:</strong> {mechanic?.name}
+                    <strong>Mecánico:</strong> {mecanico.usuario.nombre} {mecanico.usuario.apellido}
                 </p>
                 <p className="text-gray-700 mb-2">
                     <strong>Fecha:</strong> {formattedDate}
                 </p>
                 <p className="text-gray-700 mb-2">
-                    <strong>Hora:</strong> {formattedTime}
+                    <strong>Hora:</strong> {new Date(formattedTimeInit).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(formattedTimeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
                 <p className="text-gray-700 mb-2">
                     <strong>Servicio:</strong> Estándar

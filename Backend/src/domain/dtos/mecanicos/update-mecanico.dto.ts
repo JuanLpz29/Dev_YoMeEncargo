@@ -1,6 +1,3 @@
-
-
-
 export class UpdateMecanicoDto {
 
     private constructor(
@@ -15,21 +12,30 @@ export class UpdateMecanicoDto {
         const returnObject: { [key: string]: any } = {};
 
         returnObject.horario = this.horario;
-        returnObject.certificado = this.certificado;
-        returnObject.url_foto = this.url_foto;
+        if (this.certificado !== null) returnObject.certificado = this.certificado;
+        if (this.url_foto !== null) returnObject.url_foto = this.url_foto;
+        returnObject.valoracion = this.valoracion;
 
         return returnObject;
     }
 
     public static create(props: { [key: string]: any }): [string?, UpdateMecanicoDto?] {
 
-        const { id, horario, certificado, url_foto } = props;
+        const { id, horario, certificado, url_foto, valoracion } = props;
+        console.log("props >>>", props);
 
         if (!id || isNaN(Number(id))) return ['Id no tiene un valor válido', undefined];
 
-        if (!horario || !certificado || !url_foto) return ['No se enviaron todos los campos', undefined];
+        if (!horario && !certificado && !url_foto && valoracion === undefined) {
+            return ['No se enviaron valores para actualizar', undefined];
+        }
 
-        return [undefined, new UpdateMecanicoDto(id, horario, certificado, url_foto, 0)];
+        if (valoracion !== undefined) {
+            const valoracionNum = Number(valoracion);
+            if (isNaN(valoracionNum)) return ['Valoración debe ser un número válido', undefined];
+        }
+
+        return [undefined, new UpdateMecanicoDto(id, horario, certificado, url_foto, valoracion !== undefined ? Number(valoracion) : undefined)];
 
     }
 

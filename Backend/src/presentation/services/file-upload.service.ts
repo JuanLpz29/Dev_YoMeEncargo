@@ -8,6 +8,7 @@ import { ensureDirectoriesExist } from '../../utils/fileUtils';
 const uploadDirectories = ['uploads/certificados/', 'uploads/foto/'];
 ensureDirectoriesExist(uploadDirectories);
 
+
 // Configuración del almacenamiento con multer
 const storage: StorageEngine = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -27,7 +28,7 @@ const upload = multer({
         const validExtensions = ['png', 'gif', 'jpg', 'jpeg'];
         const fileExtension = path.extname(file.originalname).slice(1);
         if (!validExtensions.includes(fileExtension)) {
-            return cb(CustomError.badRequest(`Invalid extension: ${fileExtension}, valid ones: ${validExtensions.join(', ')}`), false);
+            return cb(CustomError.badRequest(`Invalid extension: ${fileExtension}, valid ones: ${validExtensions.join(', ')}`));
         }
         cb(null, true);
     }
@@ -40,7 +41,7 @@ export class FileUploadService {
         { name: 'foto', maxCount: 1 }
     ]);
 
-    async handleSingleUpload(req, res, next) {
+    async handleSingleUpload(req: any, res: any, next: any) {
         this.uploadSingle(req, res, (error) => {
             if (error) {
                 return next(error);
@@ -49,7 +50,7 @@ export class FileUploadService {
         });
     }
 
-    async handleMultipleUpload(req, res, next) {
+    async handleMultipleUpload(req: any, res: any, next: any) {
         this.uploadMultiple(req, res, (error) => {
             if (error) {
                 return next(error);

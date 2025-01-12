@@ -107,7 +107,7 @@ const FAQs = () => {
 	];
 
 	return (
-		<div className="bg-offCyan">
+		<div className="bg-offCyan py-28">
 			<section id ="faqs" className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-4 w-full">
 				<div className="space-y-3 text-center">
 					<h1 className="text-3xl text-gray-800 font-semibold">

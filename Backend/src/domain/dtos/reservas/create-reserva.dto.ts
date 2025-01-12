@@ -13,7 +13,6 @@ export class CreateReservaDto {
         const { fecha, horaInicio, horaFin, ubicacion } = props;
         const id_vehiculo = +props.id_vehiculo;
 
-        // Validaciones de campos obligatorios
         if (!fecha || !horaInicio || !horaFin || !id_vehiculo || !ubicacion) {
             return ['No se enviaron todos los campos correctamente', undefined];
         }
@@ -28,10 +27,9 @@ export class CreateReservaDto {
         let newHoraInicio = horaInicio;
         let newHoraFin = horaFin;
 
-        // Validar y ajustar fecha
         if (fecha) {
             try {
-                newFecha = moment.tz(fecha, chileTimeZone).format();
+                newFecha = moment.tz(fecha, ['DD/M/YYYY', 'DD/MM/YYYY', 'D/MM/YYYY', 'D/M/YYYY', 'YYYY-MM-DD', 'MM/DD/YYYY', 'DD-MM-YYYY'], true, chileTimeZone).format();
                 if (newFecha === 'Invalid date') {
                     return ['Fecha inválida', undefined];
                 }
@@ -40,12 +38,10 @@ export class CreateReservaDto {
             }
         }
 
-        // Validar y ajustar horaInicio
         if (horaInicio) {
             try {
                 if (horaInicio.length <= 5) {
-                    // Si solo se pasa una hora ("HH:mm"), la combinamos con la fecha
-                    newHoraInicio = moment.tz(`${fecha}T${horaInicio}`, chileTimeZone).format();
+                    newHoraInicio = moment.tz(newFecha.split('T')[0] + `T${horaInicio}`, chileTimeZone).format();
                 } else {
                     newHoraInicio = moment.tz(horaInicio, chileTimeZone).format();
                 }
@@ -57,12 +53,10 @@ export class CreateReservaDto {
             }
         }
 
-        // Validar y ajustar horaFin
         if (horaFin) {
             try {
                 if (horaFin.length <= 5) {
-                    // Si solo se pasa una hora ("HH:mm"), la combinamos con la fecha
-                    newHoraFin = moment.tz(`${fecha}T${horaFin}`, chileTimeZone).format();
+                    newHoraFin = moment.tz(newFecha.split('T')[0] + `T${horaFin}`, chileTimeZone).format();
                 } else {
                     newHoraFin = moment.tz(horaFin, chileTimeZone).format();
                 }
@@ -74,7 +68,18 @@ export class CreateReservaDto {
             }
         }
 
-        // Devolver el nuevo DTO con las fechas ajustadas
+        if (newFecha) {
+            newFecha = moment.tz(newFecha, chileTimeZone).utc().format();
+        }
+
+        if (newHoraInicio) {
+            newHoraInicio = moment.tz(newHoraInicio, chileTimeZone).utc().format();
+        }
+
+        if (newHoraFin) {
+            newHoraFin = moment.tz(newHoraFin, chileTimeZone).utc().format();
+        }
+
         return [undefined, new CreateReservaDto(newFecha, newHoraInicio, newHoraFin, id_vehiculo, ubicacion)];
     }
 }

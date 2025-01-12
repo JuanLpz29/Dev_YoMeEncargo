@@ -18,8 +18,7 @@ const Hero = () => {
 	}
 
 	return (
-		<>
-			<section className="py-28">
+			<section className="py-28   bg-offCyan">
 				<div className="max-w-screen-xl mx-auto text-gray-600 gap-x-12 items-center justify-between overflow-hidden md:flex md:px-8 w-full">
 					<div className="flex-none space-y-5 px-4 sm:max-w-lg md:px-0 lg:max-w-xl">
 						<h1 className="text-sm text-[#43a6e8] font-medium">
@@ -57,20 +56,19 @@ const Hero = () => {
 						</div>
 						{!isLoggedIn() && (
 							<h1 className="text-sm text-[#43a6e8] font-small font-semibold">
-								Debes iniciar sesión para ver a los mecánicos disponibles
+								Debes iniciar sesión para ver a los mecánicos disponibles. Si eres mecánico y quieres trabajar con nosotros, por favor regístrate.
 							</h1>
 						)}
 					</div>
 					<div className="flex-none mt-14 md:mt-0 md:max-w-xl">
 						<img
 							src="src/assets/images/Hero.jpeg"
-							className=" md:rounded-tl-[108px]"
+							className="md:rounded-tl-[108px]"
 							alt=""
 						/>
 					</div>
 				</div>
 			</section>
-		</>
 	);
 };
 

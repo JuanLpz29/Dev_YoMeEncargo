@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
 	XIcon,
 	FacebookIcon,
@@ -13,11 +14,22 @@ const Footer = () => {
 		},
 	];
 
+	const [userRole, setUserRole] = useState(null);
+
+		useEffect(() => {
+			const usuarioString = localStorage.getItem("usuario");
+			if (usuarioString) {
+				const usuario = JSON.parse(usuarioString);
+				setUserRole(usuario.rol);
+			}
+		}, []);
+	
+
 	return (
 		<footer className="text-gray-400 bg-myGray w-full">
 			<div className="px-4 py-5 max-w-screen-xl mx-auto md:px-8">
 				<div className="max-w-lg mx-auto text-center">
-					<a href="/" className="inline-block">
+				<a href={userRole === "MECANICO" ? "/HeroMecanico" : "/"}>
 						<img
 							src="img/logoyme.svg"
 							alt="Logo de YoMeEncargo"

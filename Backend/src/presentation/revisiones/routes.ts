@@ -13,6 +13,7 @@ export class RevisionesRoutes {
 
         router.get('/', revisionesController.getRevisiones);
         router.get('/:id', revisionesController.getRevisionById);
+        router.get('/mecanico/:id_mecanico', revisionesController.getRevisionesByMecanico);
         router.post('/', revisionesController.createRevision);
         router.put('/:id', revisionesController.updateRevision);
         router.delete('/:id', revisionesController.deleteRevision);

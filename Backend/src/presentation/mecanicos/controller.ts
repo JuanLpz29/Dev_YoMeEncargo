@@ -57,12 +57,30 @@ export class MecanicosController {
         res.json(mecanicos);
     };
 
+    public getMecanicosWithUser = async (req: Request, res: Response) => {
+        const usuarioConMecanico = await prisma.mecanico.findMany({
+            include: {
+                usuario: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        apellido: true,
+                        celular: true,
+                        correo: true,
+                        rol: true
+                    }
+                },
+            },
+        });
+        res.json(usuarioConMecanico);
+    };
+
     public getMecanicoById = async (req: Request, res: Response) => {
         const id = +req.params.id;
         if (!id) return res.status(400).json({ message: 'ID inválido' });
 
         const mecanico = await prisma.mecanico.findUnique({
-            where: { id: id }
+            where: { id_usuario: id }
         });
 
         if (!mecanico) {
@@ -73,7 +91,50 @@ export class MecanicosController {
     };
 
     public updateMecanico = async (req: Request, res: Response) => {
+        const files: Files | undefined = req.files as Files;
+        const certificado = files['certificado'] ? files['certificado'][0].filename : null;
+        const url_foto = files['foto'] ? files['foto'][0].filename : null;
 
+        try {
+            const [error, updateMecanicoDto] = UpdateMecanicoDto.create({ id: +req.params.id, ...req.body, certificado, url_foto });
+            if (error) {
+                this.deleteFiles(certificado, url_foto);
+                return res.status(400).json({ error });
+            }
+
+            const mecanico = await prisma.mecanico.findUnique({
+                where: { id: updateMecanicoDto!.id }
+            });
+            console.log("mecanico >>>", mecanico);
+
+            if (!mecanico) {
+                this.deleteFiles(certificado, url_foto);
+                return res.status(404).json({ message: 'Mecánico no encontrado' });
+            }
+
+            // Guardar los archivos antiguos antes de actualizar
+            const oldCertificado = mecanico.certificado;
+            const oldFoto = mecanico.url_foto;
+
+            const updatedMecanico = await prisma.mecanico.update({
+                where: { id: updateMecanicoDto!.id },
+                data: updateMecanicoDto!.values
+            });
+
+            console.log("updatedMecanico >>>", updatedMecanico);
+            // Eliminar archivos antiguos si se subieron nuevos
+            if (certificado && oldCertificado) {
+                this.deleteFiles(oldCertificado, null);
+            }
+            if (url_foto && oldFoto) {
+                this.deleteFiles(null, oldFoto);
+            }
+
+            return res.json(updatedMecanico);
+        } catch (error) {
+            this.deleteFiles(certificado, url_foto);
+            return res.status(500).json({ message: 'Error al actualizar el mecánico' });
+        }
     };
 
     public deleteMecanico = async (req: Request, res: Response) => {

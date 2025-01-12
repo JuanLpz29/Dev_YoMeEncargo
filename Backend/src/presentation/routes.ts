@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AuthRoutes, MecanicosRoutes, ReservasRoutes, RevisionesRoutes, UsuariosRoutes, VehiculosRoutes } from '.';
+import { AuthRoutes, FilesRoutes, MecanicosRoutes, ReservasRoutes, RevisionesRoutes, UsuariosRoutes, VehiculosRoutes } from '.';
 
 
 
@@ -18,7 +18,8 @@ export class AppRoutes {
         router.use('/api/vehiculos', VehiculosRoutes.routes);
         router.use('/api/reservas', ReservasRoutes.routes);
         router.use('/api/revisiones', RevisionesRoutes.routes);
-
+        router.use('/api/files', FilesRoutes.routes);
+        
         router.use('/api/auth', AuthRoutes.routes);
 
 

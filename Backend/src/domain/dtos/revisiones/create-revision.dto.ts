@@ -1,24 +1,10 @@
-
-
-// model Revision {
-//   id          Int @id @default (autoincrement())
-//   id_mecanico Int @db.Integer
-//   id_reserva  Int @db.Integer
-//   reporte     String @db.VarChar
-//   comentario  String @db.Text
-//   pago        Pago @default (PENDIENTE)
-
-//   mecanico Mecanico @relation(fields: [id_mecanico], references: [id])
-//   reserva  Reserva @relation(fields: [id_reserva], references: [id])
-// }
-
 export class CreateRevisionDto {
 
     private constructor(
         public readonly id_mecanico: number,
         public readonly id_reserva: number,
-        public readonly reporte: string,
-        public readonly comentario: string,
+        public readonly reporte: string | null,
+        public readonly comentario: string | null,
 
     ) { }
 
@@ -26,18 +12,12 @@ export class CreateRevisionDto {
 
         const id_mecanico = +props.id_mecanico;
         const id_reserva = +props.id_reserva;
-        const { reporte, comentario } = props;
+        const reporte = props.reporte || null;
+        const comentario = props.comentario || null;
 
-        console.log("props >>>", props);
-
-        if (!id_mecanico || !id_reserva || !reporte) {
+        if (!id_mecanico || !id_reserva) {
             console.log("No se enviaron todos los campos correctamente");
             return ['No se enviaron todos los campos correctamente', undefined];
-        }
-
-        if (!comentario) {
-            console.log("No se envio el comentario");
-            return ['No se envio el comentario', undefined];
         }
 
         if (isNaN(id_mecanico)) {

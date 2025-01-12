@@ -5,43 +5,43 @@ const ModalTerminos = ({ isOpen, onClose, type }) => {
         terminos: {
             title: "Términos de Uso",
             text: `
-                1. Aceptación de los Términos
+                1. Aceptación de los Términos:
                 Al acceder y utilizar YoMeEncargo, aceptas estos términos de uso y te comprometes a cumplirlos.
 
                 2. Uso del Servicio
-                - Debes ser mayor de 18 años para usar nuestros servicios
-                - La información proporcionada debe ser veraz y precisa
-                - Te comprometes a no usar el servicio con fines ilegales
+                - No hay restricción de edad para usar el servicio, pero hacemos hincapié en que los infantes no deberían utilizar un servicio como este.
+                - La información proporcionada debe ser veraz y precisa.
+                - Te comprometes a no usar el servicio con fines ilegales.
 
-                3. Responsabilidades
-                - YoMeEncargo no se hace responsable de daños indirectos
-                - Los usuarios son responsables de mantener la confidencialidad de sus cuentas
+                3. Responsabilidades:
+                - YoMeEncargo no se hace responsable de daños indirectos.
+                - Los usuarios son responsables de mantener la confidencialidad de sus cuentas.
 
-                4. Modificaciones
-                Nos reservamos el derecho de modificar estos términos en cualquier momento
+                4. Modificaciones:
+                Nos reservamos el derecho de modificar estos términos en cualquier momento.
             `
         },
         privacidad: {
             title: "Política de Privacidad",
             text: `
-                1. Información que Recolectamos
-                - Datos personales: nombre, correo, teléfono
-                - Información del vehículo
-                - Historial de servicios
+                1. Información que Recolectamos:
+                - Datos personales: nombre, correo, teléfono.
+                - Información del vehículo.
+                - Historial de servicios.
 
-                2. Uso de la Información
-                - Proporcionar y mejorar nuestros servicios
-                - Comunicarnos contigo
-                - Procesar pagos y transacciones
+                2. Uso de la Información:
+                - Proporcionar y mejorar nuestros servicios.
+                - Comunicarnos contigo.
+                - Procesar pagos y transacciones.
 
-                3. Protección de Datos
-                - Implementamos medidas de seguridad para proteger tu información
-                - No compartimos tus datos con terceros sin tu consentimiento
+                3. Protección de Datos:
+                - Implementamos medidas de seguridad para proteger tu información.
+                - No compartimos tus datos con terceros sin tu consentimiento.
 
-                4. Tus Derechos
-                - Acceder a tus datos personales
-                - Solicitar correcciones o eliminación
-                - Opt-out de comunicaciones promocionales
+                4. Tus Derechos:
+                - Acceder a tus datos personales.
+                - Solicitar correcciones o eliminación.
+                - Opt-out de comunicaciones promocionales (cancelar suscripción).
             `
         }
     };

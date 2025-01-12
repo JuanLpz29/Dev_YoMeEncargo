@@ -64,10 +64,23 @@ const LoginPage = () => {
           window.dispatchEvent(event);
           
           navigate("/");
+          window.location.reload();
         }
       } catch (error) {
         console.error("Error al iniciar sesión:", error);
-      }
+        // Manejar los mensajes de error específicos
+        if (error.response && error.response.data && error.response.data.message) {
+            setErrors(prev => ({
+                ...prev,
+                general: error.response.data.message
+            }));
+        } else {
+            setErrors(prev => ({
+                ...prev,
+                general: "Contraseña o correo incorrectos"
+            }));
+        }
+    }
     }
   };
 
@@ -128,6 +141,8 @@ const LoginPage = () => {
               </div>
             </div>
 
+            {errors.general && <p className="mt-4 text-center text-red-500">{errors.general}</p>}
+
             <button
               type="submit"
               className="w-full py-2 px-4 bg-myColor hover:bg-myGray text-white font-semibold rounded-md hover:text-myColor focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50 transition-colors"
@@ -147,6 +162,12 @@ const LoginPage = () => {
               className="mt-4 w-full py-2 px-4 border border-myColor text-myColor font-semibold rounded-md hover:bg-myColor hover:text-white focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50 transition-colors"
             >
               Ir al registro
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="mt-4 w-full py-2 px-4 border border-myColor text-myColor font-semibold rounded-md hover:bg-myColor hover:text-white focus:outline-none focus:ring-2 focus:ring-myColor focus:ring-opacity-50 transition-colors"
+            >
+              Volver al Home
             </button>
           </div>
         </div>

@@ -9,14 +9,21 @@ export class MecanicosRoutes {
         const router = Router();
         const mecanicosController = new MecanicosController();
 
-        router.get('/', [AuthMiddleware.validateJWT, AuthMiddleware.checkRole(['USUARIO'])], mecanicosController.getMecanicos);
-        router.get('/:id', mecanicosController.getMecanicoById);
+        router.get('/', mecanicosController.getMecanicos);
+        router.get('/with-user', mecanicosController.getMecanicosWithUser);
+        router.get('/:id', [AuthMiddleware.validateJWT], mecanicosController.getMecanicoById);
 
         const cpUploadCreate = uploadCreate.fields([
             { name: 'certificado', maxCount: 1 },
             { name: 'foto', maxCount: 1 }
         ]);
-        router.post('/', [AuthMiddleware.validateJWT, AuthMiddleware.checkRole(['MECANICO'])], cpUploadCreate, mecanicosController.createMecanico);
+        router.post('/', [AuthMiddleware.validateJWT], cpUploadCreate, mecanicosController.createMecanico);
+
+        const cpUploadUpdate = uploadCreate.fields([
+            { name: 'certificado', maxCount: 1 },
+            { name: 'foto', maxCount: 1 }
+        ]);
+        router.put('/:id', [AuthMiddleware.validateJWT], cpUploadUpdate, mecanicosController.updateMecanico);
 
         router.delete('/:id', mecanicosController.deleteMecanico);
 

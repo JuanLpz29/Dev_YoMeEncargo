@@ -50,6 +50,34 @@ export class RevisionesController {
             : res.status(404).json({ error: 'Revisión no encontrada' });
     };
 
+    public getRevisionesByMecanico = async (req: Request, res: Response) => {
+        const id_mecanico = +req.params.id_mecanico;
+        if (isNaN(id_mecanico)) return res.status(400).json({ error: 'El id del mecánico debe ser un número' });
+        const revisiones = await prisma.revision.findMany({
+            where: { 
+                mecanico: {
+                    id_usuario: id_mecanico
+                }
+            },
+            include: {
+                mecanico: true,
+                reserva: {
+                    include: {
+                        vehiculo: {
+                            include: {
+                                usuario: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        (revisiones )
+            ? res.json(revisiones)
+            : res.status(404).json({ error: 'Revisión no encontrada' });
+    };
+
     public updateRevision = async (req: Request, res: Response) => {
         const id = +req.params.id;
         const [error, updateRevisionDto] = UpdateRevisionDto.create({ id, ...req.body });
