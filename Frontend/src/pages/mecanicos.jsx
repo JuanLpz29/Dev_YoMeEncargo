@@ -13,7 +13,7 @@ const Mecanicos = () => {
 	const [showMechanic, setShowMechanic] = useState(false);
 	const [datosMecanicos, setDatosMecanicos] = useState(null);
 
-	const API_URL = "http://localhost:3000/api";
+	const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 	useEffect(() => {
 		const obtenerDatosMecanicos = async () => {
@@ -120,16 +120,16 @@ const Mecanicos = () => {
 								<div className="flex items-center space-x-4">
 									<Avatar.Root className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-offCyan ring-offset-2 ring-myGray ring-2">
 										<Avatar.Fallback className="text-4xl text-myColor font-semibold">
-											{mecanico.nombre?.charAt(0)}
-											{mecanico.apellido?.charAt(0)}
+											{mecanico.usuario?.nombre?.charAt(0)}
+											{mecanico.usuario?.apellido?.charAt(0)}
 										</Avatar.Fallback>
 										<Avatar.Image
 											src={
 												mecanico?.url_foto
-													? `${API_URL}/files/fotos/${mecanico.url_foto}`
+													? `${import.meta.env.VITE_API_URL}/files/fotos/${mecanico.url_foto}`
 													: ""
 											}
-											alt={`${mecanico.nombre} ${mecanico.apellido}`}
+											alt={`${mecanico?.usuario?.nombre || ''} ${mecanico?.usuario?.apellido || ''}`}
 											className="w-full h-full rounded-full object-cover"
 										/>
 									</Avatar.Root>
@@ -156,11 +156,8 @@ const Mecanicos = () => {
 												{Math.round(mecanico.valoracion)}/5
 											</span>
 										</div>
-										<p className="text-white text-sm">
+										<p className="text-myColor text-bold">
 											{mecanico.horario}
-										</p>
-										<p className="text-white text-sm">
-											{mecanico.usuario.celular}
 										</p>
 										<button
 											onClick={() =>

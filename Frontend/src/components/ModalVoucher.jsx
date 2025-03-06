@@ -91,6 +91,11 @@ const ModalVoucher = ({ mecanico, selectedDate, selectedTime, price = "30.000", 
                             <span className="text-myGray">Mecánico</span>
                             <span className="font-semibold">{mecanico.usuario.nombre} {mecanico.usuario.apellido}</span>
                         </div>
+                        
+                        <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span className="text-myGray">Número de Celular </span>
+                            <span className="font-semibold">{mecanico.usuario.celular}</span>
+                        </div>
 
                         <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                             <span className="text-myGray">Fecha</span>
@@ -120,12 +125,14 @@ const ModalVoucher = ({ mecanico, selectedDate, selectedTime, price = "30.000", 
 
             {/* Botones de acción */}
             <div className="flex flex-col gap-4 w-full mt-6">
+                <p className="text-sm text-myHover font-medium">Tu mecánico se pondrá en contacto contigo a la brevedad.</p>
+                <p className="text-sm text-myHover font-medium">En caso que no se comunique también puedes optar por llamarlo al número indicado en el voucher.</p>
                 <button
                     onClick={() => navigate('/')}
                     className="bg-myColor text-white py-3 px-4 rounded-md hover:bg-myGray hover:text-myColor transition-colors flex items-center justify-center gap-2"
                 >
                     <Home className="w-5 h-5" />
-                    Inicio
+                    Finalizar
                 </button>
                 
                 <button

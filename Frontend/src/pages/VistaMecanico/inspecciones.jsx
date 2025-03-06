@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import { Calendar, Trash2, Clock, MapPin } from "lucide-react";
 import NavBar from "../../components/navbar";
 import Footer from "../../components/footer";
-import Modal from "../../components/Modal";
 import * as Avatar from "@radix-ui/react-avatar";
-import { getRevisionesByMecanico } from "../../actions/yo-me-encargo";
+import { getRevisionesByMecanico, deleteReserva } from "../../actions/yo-me-encargo";
 import moment from "moment-timezone";
 
 const Inspecciones = () => {
 	const navigate = useNavigate();
 	const [revisiones, setRevisiones] = useState([]);
-	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedRevision, setSelectedRevision] = useState(null);
 	const [loading, setLoading] = useState(true);
 
@@ -35,10 +33,25 @@ const Inspecciones = () => {
 	}, [usuario.id]);
 
 
-	const handleDeleteInspection = (id) => {
-		setRevisiones((prevRevisiones) =>
-			prevRevisiones.filter((revision) => revision.id !== id)
-		);
+	const handleDeleteReservation = async (id) => {
+		try {
+			const confirmed = window.confirm(
+				"¿Estás seguro de que deseas eliminar esta reserva?"
+			);
+			if (!confirmed) return;
+
+			const response = await deleteReserva(id);
+			if (response.success) {
+				alert("Reserva eliminada exitosamente");
+				// Actualiza el estado local filtrando la reserva eliminada
+				setRevisiones((prevRevisiones) =>
+					prevRevisiones.filter((revision) => revision.id !== id)
+				);
+			}
+		} catch (error) {
+			console.error("Error al eliminar la reserva:", error);
+			alert("Ocurrió un error al eliminar la reserva.");
+		}
 	};
 
 	const formatDate = (dateString) => {
@@ -51,21 +64,11 @@ const Inspecciones = () => {
 		return time.format("HH:mm");
 	};
 
-	const openModal = (revision) => {
-		setSelectedRevision(revision);
-		setIsModalOpen(true);
-	};
-
-	const closeModal = () => {
-		setIsModalOpen(false);
-		setSelectedRevision(null);
-	};
-
 	return (
-		<>
+		<div className="bg-offCyan">
 			<NavBar />
 
-			<div className="container mx-auto px-4 py-8 min-h-screen bg-offCyan">
+			<div className="container mx-auto px-4 py-8 min-h-screen">
 				<h1 className="text-3xl font-bold text-center text-myColor mb-8">
 					Inspecciones Programadas
 				</h1>
@@ -118,13 +121,13 @@ const Inspecciones = () => {
 													revision.reserva?.vehiculo
 														?.usuario?.apellido
 												}
-												
-												<span className="text-sm text-myHover ml-2">														{
-														revision.reserva?.vehiculo
-															?.usuario?.celular
-													}</span>
 
-												
+												<span className="text-sm text-myHover ml-2">														{
+													revision.reserva?.vehiculo
+														?.usuario?.celular
+												}</span>
+
+
 											</h2>
 
 											<h2 className="text-xl font-semibold text-white mb-1">
@@ -151,16 +154,14 @@ const Inspecciones = () => {
 
 										<button
 											onClick={() =>
-												handleDeleteInspection(
-													revision.id
-												)
+												handleDeleteReservation(revision.id_reserva)
 											}
-											className={`py-2 px-4 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition-colors flex items-center justify-center ml-4 ${revision.estado === "PENDIENTE"
-													? "cursor-not-allowed opacity-50"
-													: ""
+											className={`py-2 px-4 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition-colors flex items-center justify-center ml-4 ${revision.pago === "PENDIENTE"
+												? "cursor-not-allowed opacity-50"
+												: ""
 												}`}
 											disabled={
-												revision.estado === "PENDIENTE"
+												revision.pago === "PENDIENTE"
 											}
 										>
 											<Trash2 className="w-5 h-5 mr-2" />
@@ -190,8 +191,8 @@ const Inspecciones = () => {
 										</p>
 										<p
 											className={`flex items-center ${revision.pago === "PENDIENTE"
-													? "text-orange-500"
-													: "text-green-500"
+												? "text-orange-500"
+												: "text-green-500"
 												}`}
 										>
 											{revision.pago}
@@ -200,13 +201,13 @@ const Inspecciones = () => {
 
 									<button
 										onClick={() =>
-											window.open("/reporte", "_blank")
+											navigate(`/reporte/${revision.id}`)
 										}
-										className={`mt-4 bg-myColor text-white hover:bg-myHover hover:text-white px-4 py-2 rounded-md mb-4 ${revision.pago === "REALIZADA"
+										className={`mt-4 bg-myColor text-white hover:bg-myHover hover:text-white px-4 py-2 rounded-md mb-4 ${revision.pago === "PAGADO"
 												? "cursor-not-allowed opacity-50"
 												: ""
 											}`}
-										disabled={revision.pago === "REALIZADA"}
+										disabled={revision.pago === "PAGADO"}
 									>
 										Realizar Inspección
 									</button>
@@ -217,14 +218,7 @@ const Inspecciones = () => {
 				)}
 			</div>
 			<Footer />
-
-			<Modal
-				isOpen={isModalOpen}
-				onClose={closeModal}
-				revision={selectedRevision}
-				tipo="cancelacion"
-			/>
-		</>
+		</div>
 	);
 };
 

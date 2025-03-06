@@ -16,17 +16,17 @@ export class CreateRevisionDto {
         const comentario = props.comentario || null;
 
         if (!id_mecanico || !id_reserva) {
-            console.log("No se enviaron todos los campos correctamente");
+            
             return ['No se enviaron todos los campos correctamente', undefined];
         }
 
         if (isNaN(id_mecanico)) {
-            console.log("ID de mecánico inválido");
+            
             return ['ID de mecánico inválido', undefined];
         }
 
         if (isNaN(id_reserva)) {
-            console.log("ID de reserva inválido");
+            
             return ['ID de reserva inválido', undefined];
         }
 

@@ -12,7 +12,7 @@ import Inspecciones from "./pages/VistaMecanico/inspecciones";
 import HeroMecanico from "./pages/VistaMecanico/HeroMecanico";
 import Reporte from "./pages/VistaMecanico/reporte";
 import PM from "./pages/VistaMecanico/PM";
-
+import ReportShared from "./pages/VistaMecanico/reportShared";
 import NotFound from "./pages/NotFound";
 
 
@@ -57,13 +57,13 @@ function App() {
 					></Route>
 
 					<Route
-						path="/reporte"
+						path="/reporte/:id"
 						element={<Reporte></Reporte>}
 					></Route>
 
 					<Route
 						path="/revision/compartir/:id"
-						element={<Reporte></Reporte>}
+						element={<ReportShared></ReportShared>}
 					></Route>
 
 					<Route

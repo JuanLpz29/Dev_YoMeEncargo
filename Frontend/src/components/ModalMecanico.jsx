@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import * as Avatar from "@radix-ui/react-avatar";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const ModalMecanico = ({ mecanico, selectedDate, onClose, onReservar }) => {
 	const [selectedTime, setSelectedTime] = useState("");
@@ -136,7 +136,7 @@ const ModalMecanico = ({ mecanico, selectedDate, onClose, onReservar }) => {
 		<div className="p-6 mb-8">
 			{/* Modal Header */}
 			<div className="flex justify-between items-center p-6 border-b">
-				<h2 className="text-2xl font-bold text-gray-900">{`${mecanico.usuario.nombre} ${mecanico.usuario.apellido}`}</h2>
+				<h2 className="text-2xl font-bold text-gray-900">Información del Mecánico</h2>
 				<button
 					onClick={onClose}
 					className="text-gray-500 hover:text-gray-700"
@@ -191,9 +191,7 @@ const ModalMecanico = ({ mecanico, selectedDate, onClose, onReservar }) => {
 								</span>
 
 							</div>
-							<p className="text-myHover">
-								{mecanico.usuario.celular}
-							</p>
+
 						</div>
 						<div className="rounded-md">
 							<div className="flex flex-col items-center">
@@ -222,7 +220,7 @@ const ModalMecanico = ({ mecanico, selectedDate, onClose, onReservar }) => {
 						<h4 className="text-lg font-semibold text-gray-900">
 							Comentarios
 						</h4>
-						<div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+						<div className="max-h-[400px] overflow-y-auto pr-2">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								{reviews.map((review) => (
 									<div

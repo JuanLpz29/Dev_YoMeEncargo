@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CreditCard, HandCoins } from 'lucide-react';
 import { createVehiculo, createReservation, createRevision } from "../actions/yo-me-encargo";
 
-const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, vehiculo }) => {
+const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, vehiculo, location }) => {
     const [loading, setLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('credit');
 
@@ -10,8 +10,9 @@ const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, ve
     const formattedDate = selectedDate ? new Date(selectedDate + "T00:00:00").toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-') : 'No seleccionada';
     const formattedTimeInit = selectedTime ? new Date(selectedDate + "T" + selectedTime).toISOString() : 'No seleccionada';
     const formattedTimeEnd = selectedTime ? new Date(new Date(selectedDate + "T" + selectedTime).getTime() + 60 * 60 * 1000).toISOString() : 'No seleccionada';
-
-    const price = mecanico?.price || '30.000';
+    const newLocation = location || 'Sin dirección';
+    
+    const price = '30.000';
 
     const handleSimulatedPayment = async () => {
         setLoading(true);
@@ -27,7 +28,7 @@ const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, ve
                     horaInicio: selectedTime,
                     horaFin: new Date(new Date(selectedDate + "T" + selectedTime).getTime() + 60 * 60 * 1000).toISOString(),
                     id_vehiculo: nuevoVehiculo.id,
-                    ubicacion: "Santiago, Chile",
+                    ubicacion: location,
                 });
 
                 const nuevaRevision = await createRevision({
@@ -58,6 +59,9 @@ const ModalPayment = ({ onBack, onNext, mecanico, selectedDate, selectedTime, ve
                 </p>
                 <p className="text-gray-700 mb-2">
                     <strong>Hora:</strong> {new Date(formattedTimeInit).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(formattedTimeEnd).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+                <p className="text-gray-700 mb-2">
+                    <strong>Dirección:</strong> {newLocation}
                 </p>
                 <p className="text-gray-700 mb-2">
                     <strong>Servicio:</strong> Estándar

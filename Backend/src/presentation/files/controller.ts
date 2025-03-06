@@ -8,7 +8,7 @@ export class FilesController {
 
   public getCertificado = (req: Request, res: Response) => {
     const filePath = path.join(__dirname, '../../../uploads/certificados', req.params.filename);
-    console.log("filePath >>> ", filePath);
+    
     res.sendFile(filePath, (err) => {
       if (err) {
         res.status(404).json({ error: 'Certificado no encontrado' });
@@ -18,7 +18,7 @@ export class FilesController {
 
   public getFoto = (req: Request, res: Response) => {
     const filePath = path.join(__dirname, '../../../uploads/fotos', req.params.filename);
-    console.log("filePath >>> ", filePath);
+    
     res.sendFile(filePath, (err) => {
       if (err) {
         res.status(404).json({ error: 'Foto no encontrada' });

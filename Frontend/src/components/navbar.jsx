@@ -4,13 +4,15 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import ModalPM from "../components/ModalPM";
 import { getMecanico } from "../actions/yo-me-encargo";
-const API_URL = "http://localhost:3000/api";
+import logoYme from '../assets/img/logoyme.svg';
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+console.log("LA API ES:", API_URL);
+
 
 const usuarioString = localStorage.getItem("usuario");
 const usuario = JSON.parse(usuarioString);
-console.log("usuario >>>", usuario);
 const token = localStorage.getItem("token");
-console.log("token >>>", token);
 const loggedIn = token ? true : false;
 
 const ProfileDropDown = (props) => {
@@ -50,20 +52,19 @@ const ProfileDropDown = (props) => {
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("usuario");
-		console.log("Usuario deslogueado");
 		navigate("/");
 	};
 
 	const navigation =
 		usuario?.rol === "MECANICO"
 			? [
-					{ title: "Perfil", path: "/ProfileMecanico" },
-					{ title: "Salir", path: "/", onClick: handleLogout },
-			  ]
+				{ title: "Perfil", path: "/ProfileMecanico" },
+				{ title: "Salir", path: "/", onClick: handleLogout },
+			]
 			: [
-					{ title: "Perfil", path: "/perfil" },
-					{ title: "Salir", path: "/", onClick: handleLogout },
-			  ];
+				{ title: "Perfil", path: "/perfil" },
+				{ title: "Salir", path: "/", onClick: handleLogout },
+			];
 
 	useEffect(() => {
 		const handleDropDown = (e) => {
@@ -73,9 +74,8 @@ const ProfileDropDown = (props) => {
 	}, []);
 
 	const getInitials = (nombre, apellido) => {
-		return `${nombre?.charAt(0) || ""}${
-			apellido?.charAt(0) || ""
-		}`.toUpperCase();
+		return `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""
+			}`.toUpperCase();
 	};
 
 	return (
@@ -90,13 +90,13 @@ const ProfileDropDown = (props) => {
 						<img
 							src={`${API_URL}/files/fotos/${datosMecanico.url_foto}`}
 							className="w-full h-full rounded-full object-cover"
-							alt={`${usuario.nombre || ""} ${usuario.apellido || ""}`}
+							alt={`${usuario?.nombre || ''} ${usuario?.apellido || ''}`}
 						/>
 					) : usuario && usuario.imagen ? (
 						<img
 							src={usuario.imagen}
 							className="w-full h-full rounded-full"
-							alt={`${usuario.nombre || ""} ${usuario.apellido || ""}`}
+							alt={`${usuario?.nombre || ""} ${usuario?.apellido || ""}`}
 						/>
 					) : (
 						<span className="text-[#43a6e8] font-semibold">
@@ -118,9 +118,8 @@ const ProfileDropDown = (props) => {
 				)}
 			</div>
 			<ul
-				className={`md:bg-[#1E293B] top-12 right-0 mt-5 space-y-5 md:absolute md:border md:rounded-md md:text-sm md:w-52 md:shadow-md md:space-y-0 md:mt-0 ${
-					state ? "" : "md:hidden"
-				}`}
+				className={`md:bg-[#1E293B] top-12 right-0 mt-5 space-y-5 md:absolute md:border md:rounded-md md:text-sm md:w-52 md:shadow-md md:space-y-0 md:mt-0 ${state ? "" : "md:hidden"
+					}`}
 			>
 				{navigation.map((item, idx) => (
 					<li key={idx}>
@@ -196,17 +195,16 @@ const NavBar = () => {
 
 	return (
 		<nav
-			className={`bg-myGray md:text-sm border-b ${
-				state
+			className={`bg-myGray md:text-sm border-b ${state
 					? "shadow-lg rounded-xl border mx-2 mt-2 md:shadow-none md:border-none md:mx-2 md:mt-0"
 					: ""
-			}`}
+				}`}
 		>
 			<div className="gap-x-14 items-center max-w-screen-xl mx-auto px-4 md:flex md:px-8">
 				<div className="flex items-center justify-between py-5 md:block">
 					<a href="/">
 						<img
-							src="img/logoyme.svg"
+							src={logoYme}
 							width={240}
 							height={50}
 							alt="YoMeEncargo logo"
@@ -225,9 +223,8 @@ const NavBar = () => {
 					</div>
 				</div>
 				<div
-					className={`flex-1 items-center md:mt-0 md:flex ${
-						state ? "block" : "hidden"
-					} `}
+					className={`flex-1 items-center md:mt-0 md:flex ${state ? "block" : "hidden"
+						} `}
 				>
 					<ul className="justify-center items-center space-y-6 border-b md:border-none md:flex md:space-x-6 md:space-y-0">
 						{navigation.map((item, idx) => {

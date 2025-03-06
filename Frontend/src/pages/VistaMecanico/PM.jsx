@@ -5,12 +5,14 @@ import { User, Mail, Phone, Save, LogOut, Pencil, FileText, Camera, House } from
 import NavBar from "../../components/navbar";
 import Footer from "../../components/footer";
 import * as Avatar from "@radix-ui/react-avatar";
-import { updateUsuario } from "../../actions/yo-me-encargo";
+import { updateUsuario, updateMecanico } from "../../actions/yo-me-encargo";
 import { getMecanico } from "../../actions/yo-me-encargo";
+
 
 const usuarioString = localStorage.getItem("usuario");
 const usuario = JSON.parse(usuarioString);
-const API_URL = "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
 
 const ProfileMecanico = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -73,31 +75,28 @@ const ProfileMecanico = () => {
             ...prev,
             [name]: value,
         }));
+
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData((prev) => ({
-                    ...prev,
-                    avatarUrl: reader.result,
-                }));
-            };
-            reader.readAsDataURL(file);
+    const horario = `${formData.availability.startDay} a ${formData.availability.endDay} ${formData.availability.startTime} - ${formData.availability.endTime}`;
+    
+    const handleDayChange = async () => {
+        try {
+            const id = datosMecanico.id;
+            const formUpdate = new FormData();
+            formUpdate.append("horario", horario);
+
+            await updateMecanico(id, formUpdate);
+
+            setIsChanging(false);
+            alert("Disponibilidad actualizada correctamente");
+        } catch (error) {
+            console.error("Error al actualizar disponibilidad:", error);
+            alert("Error al actualizar disponibilidad");
         }
     };
 
-    const handleDayChange = (e) => {
-        const { value, checked } = e.target;
-        setFormData((prev) => {
-            const days = checked
-                ? [...prev.availability.days, value]
-                : prev.availability.days.filter((day) => day !== value);
-            return { ...prev, availability: { ...prev.availability, days } };
-        });
-    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -123,8 +122,7 @@ const ProfileMecanico = () => {
             });
             localStorage.setItem("usuario", JSON.stringify(result));
             setIsEditing(false);
-            setIsChanging(false);
-            alert("Usuario actualizado correctamente");
+            alert("Datos personales actualizados correctamente");
         } catch (error) {
             console.error("Error al actualizar usuario:", error);
             alert("Error al actualizar usuario");
@@ -132,16 +130,16 @@ const ProfileMecanico = () => {
     };
 
 
-	return (
-		<div className="bg-offCyan min-h-screen">
-			<NavBar />
-			<div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-16 mb-16">
-				<div className="items-start justify-between py-4 border-b md:flex">
-					<div>
-						<h3 className="text-myColor text-2xl font-bold">
-							Perfil del Mecánico
-						</h3>
-					</div>
+    return (
+        <div className="bg-offCyan min-h-screen">
+            <NavBar />
+            <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-16 mb-16">
+                <div className="items-start justify-between py-4 border-b md:flex">
+                    <div>
+                        <h3 className="text-myColor text-2xl font-bold">
+                            Perfil del Mecánico
+                        </h3>
+                    </div>
 
                     <div className="items-center gap-x-3 mt-6 md:mt-0 sm:flex">
                         <button
@@ -194,17 +192,7 @@ const ProfileMecanico = () => {
                                                 {formData.apellido?.charAt(0)}
                                             </Avatar.Fallback>
                                         </Avatar.Root>
-                                        {isChanging && (
-                                            <label className="absolute bottom-0 right-0 bg-white p-1 rounded-full cursor-pointer">
-                                                <Camera className="text-myColor" />
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={handleFileChange}
-                                                    className="hidden"
-                                                />
-                                            </label>
-                                        )}
+
                                     </div>
                                     <div className="flex flex-col items-center text-myColor">
                                         <h2 className="text-2xl font-semibold">
@@ -330,6 +318,16 @@ const ProfileMecanico = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    {(isChanging) && (
+                                        <button
+                                            type="button"
+                                            className="flex items-center gap-2 bg-lime-500 hover:bg-lime-700 text-white py-2 px-4 rounded-md"
+                                            onClick={handleDayChange}
+                                        >
+                                            <Save />
+                                            Guardar
+                                        </button>
+                                    )}
                                 </div>
 
                                 <div className="md:w-full md:pl-8 bg-gray-100 rounded-lg p-10">
@@ -505,7 +503,7 @@ const ProfileMecanico = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        {(isEditing || isChanging) && (
+                                        {(isEditing) && (
                                             <div className="mt-6 flex justify-end">
                                                 <button
                                                     type="submit"

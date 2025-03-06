@@ -29,8 +29,6 @@ const ModalPM = ({ isOpen, onClose }) => {
 
 		try {
 			const usuario = JSON.parse(localStorage.getItem("usuario"));
-            console.log("certificate >>>", certificate);
-            console.log("photo >>>", photo);
 
 			const formData = new FormData(); // Crear una instancia de FormData
 			formData.append("id_usuario", usuario.id);
@@ -61,7 +59,6 @@ const ModalPM = ({ isOpen, onClose }) => {
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("usuario");
-		console.log("Usuario deslogueado");
 		navigate("/login");
 	};
 

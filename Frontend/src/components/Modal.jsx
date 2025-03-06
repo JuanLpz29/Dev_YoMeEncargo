@@ -11,6 +11,7 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
     const [selectedTime, setSelectedTime] = useState(null); // Estado para selectedTime
     const [vehiculo, setVehiculo] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(null);
+    const [location, setLocation] = useState('');
 
     // Reiniciar el tipo cuando se cierra el modal
     React.useEffect(() => {
@@ -24,11 +25,14 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
     const handleSwitchToForm = (data) => {
         setSelectedTime(data.selectedTime); // Actualiza el estado de selectedTime
         setCurrentType("formulario");
+        
     };
 
     const handleSwitchToReservation = (data) => {
         setVehiculo(data.vehiculo);
+        setLocation(data.location || '')
         setCurrentType("reservation");
+        
     };
 
     const handleBack = () => {
@@ -36,7 +40,6 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
     };
 
     const handleSwitchToPayment = () => {
-        console.log("Cambiando a modal de pago"); // Para debugging
         setCurrentType("payment");
     };
 
@@ -75,6 +78,7 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
 						selectedTime={selectedTime}
 						mecanico={props.mecanico}
 						selectedDate={props.selectedDate}
+                        location={location}
 					/>
 				);
             case "payment":
@@ -86,6 +90,7 @@ const Modal = ({ isOpen, onClose, type: initialType, props }) => {
                         mecanico={props.mecanico}
                         selectedDate={props.selectedDate}
                         vehiculo={vehiculo}
+                        location={location}
                     />
                 );
             case "voucher":

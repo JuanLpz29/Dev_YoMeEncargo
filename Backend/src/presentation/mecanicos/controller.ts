@@ -96,6 +96,7 @@ export class MecanicosController {
         const url_foto = files['foto'] ? files['foto'][0].filename : null;
 
         try {
+            
             const [error, updateMecanicoDto] = UpdateMecanicoDto.create({ id: +req.params.id, ...req.body, certificado, url_foto });
             if (error) {
                 this.deleteFiles(certificado, url_foto);
@@ -105,7 +106,7 @@ export class MecanicosController {
             const mecanico = await prisma.mecanico.findUnique({
                 where: { id: updateMecanicoDto!.id }
             });
-            console.log("mecanico >>>", mecanico);
+            
 
             if (!mecanico) {
                 this.deleteFiles(certificado, url_foto);
@@ -121,7 +122,6 @@ export class MecanicosController {
                 data: updateMecanicoDto!.values
             });
 
-            console.log("updatedMecanico >>>", updatedMecanico);
             // Eliminar archivos antiguos si se subieron nuevos
             if (certificado && oldCertificado) {
                 this.deleteFiles(oldCertificado, null);

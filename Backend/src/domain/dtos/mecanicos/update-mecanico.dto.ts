@@ -22,7 +22,7 @@ export class UpdateMecanicoDto {
     public static create(props: { [key: string]: any }): [string?, UpdateMecanicoDto?] {
 
         const { id, horario, certificado, url_foto, valoracion } = props;
-        console.log("props >>>", props);
+        
 
         if (!id || isNaN(Number(id))) return ['Id no tiene un valor válido', undefined];
 

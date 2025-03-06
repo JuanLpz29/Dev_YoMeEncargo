@@ -1,5 +1,6 @@
 import { RightArrowIcon } from "../assets/icons";
 import { useNavigate } from "react-router-dom";
+import heroImage from "../assets/img/hero.jpeg";
 
 const Hero = () => {
 	const navigate = useNavigate();
@@ -62,7 +63,7 @@ const Hero = () => {
 					</div>
 					<div className="flex-none mt-14 md:mt-0 md:max-w-xl">
 						<img
-							src="src/assets/images/Hero.jpeg"
+							src={heroImage}
 							className="md:rounded-tl-[108px]"
 							alt=""
 						/>

@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
-const ModalReservation = ({onBack, onNext, mecanico, selectedDate, selectedTime }) => {
+const ModalReservation = ({onBack, onNext, mecanico, selectedDate, selectedTime, location }) => {
     const navigate = useNavigate();
 
     // Formatear la fecha para mostrarla
     const formattedDate = selectedDate ? new Date(selectedDate + "T00:00:00").toLocaleDateString() : 'No seleccionada';
     const formattedTime = selectedTime || 'No seleccionada';
+    const newLocation = location || 'Sin dirección';
 
     return (
         <div className="p-6 flex flex-col justify-center items-center max-w-md mx-auto w-full">
@@ -21,10 +22,13 @@ const ModalReservation = ({onBack, onNext, mecanico, selectedDate, selectedTime 
                     <strong>Hora:</strong> {formattedTime}
                 </p>
                 <p className="text-gray-700 mb-2">
+                    <strong>Dirección:</strong> {newLocation}
+                </p>
+                <p className="text-gray-700 mb-2">
                     <strong>Servicio:</strong> Estándar
                 </p>
                 <p className="text-gray-700 mb-2">
-                    <strong>Valor:</strong> ${mecanico?.price || '30.000'}
+                    <strong>Valor:</strong> $30.000
                 </p>
             </div>
             <div className="flex flex-col gap-4 mt-6">

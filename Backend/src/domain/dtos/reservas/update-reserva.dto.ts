@@ -23,10 +23,7 @@ export class UpdateReservaDto {
         const { id, fecha, horaInicio, horaFin } = props;
         if (!id || isNaN(Number(id))) return ['ID inválido', undefined];
 
-        console.log('id', id);
-        console.log('fecha', fecha);
-        console.log('horaInicio', horaInicio);
-        console.log('horaFin', horaFin);
+        
 
         const chileTimeZone = 'America/Santiago';
 
@@ -80,9 +77,7 @@ export class UpdateReservaDto {
             }
         }
 
-        console.log('newFecha', newFecha);
-        console.log('newHoraInicio', newHoraInicio);
-        console.log('newHoraFin', newHoraFin);
+        
 
 
         return [undefined, new UpdateReservaDto(id, newFecha, newHoraInicio, newHoraFin)];

@@ -255,3 +255,79 @@ export const getRevisionesByMecanico = async (id_mecanico) => {
 		throw error;
 	}
 };
+
+export const updateRevision = async (props) => {
+	try {
+		
+		const response = await fetch(
+			`${API_URL}/revisiones/${props.id}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(props),
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Error al actualizar la revisión");
+		}
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("Error en la solicitud:", error);
+		throw error;
+	}
+};
+
+export const updateMecanico = async (id, props) => {
+	const token = localStorage.getItem("token");
+
+	try {
+		const response = await fetch(
+			`${API_URL}/mecanicos/${id}`,
+			{
+				method: "PUT",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+
+				body: props
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Error al actualizar el mecánico");
+		}
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error("Error en la solicitud:", error);
+		throw error;
+	}
+}
+
+export const deleteReserva = async (id) => {
+	try {
+		const response = await fetch(`${API_URL}/reservas/${id}`, {
+			method: "DELETE",
+			headers: {
+                "Content-Type": "application/json",
+            },
+		});
+
+		if (!response.ok) {
+			throw new Error(`Error: ${response.status} ${response.statusText}`);
+		}
+
+		const data = await response.json();
+		alert("Revisión eliminada exitosamente");
+		return data;
+	} catch (error) {
+		console.error("Error al eliminar la revisión:", error);
+        alert("Error al eliminar la revisión: " + error.message);
+	}
+}

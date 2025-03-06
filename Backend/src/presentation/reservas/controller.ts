@@ -76,13 +76,19 @@ export class ReservasController {
         if (!id || isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
 
         const reserva = await prisma.reserva.findUnique({
-            where: { id }
+            where: { id: Number(id) },
         });
 
         if (!reserva) return res.status(404).json({ error: 'Reserva no encontrada' });
 
+        // Eliminar las revisiones asociadas
+        await prisma.revision.deleteMany({
+            where: { id_reserva: reserva.id }
+        });
+
+        // Ahora eliminar la reserva
         await prisma.reserva.delete({
-            where: { id }
+            where: { id: reserva.id }
         });
 
         return res.json({ message: 'Reserva eliminada' });

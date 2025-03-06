@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from 'express';
 export class FileUploadMiddleware {
     static validateMecanicoData = (req: Request, res: Response, next: NextFunction) => {
         const { id_usuario, horario } = req.body;
-        console.log(req.body);
 
         // Validar campos requeridos en el cuerpo de la solicitud
         if (!id_usuario) {

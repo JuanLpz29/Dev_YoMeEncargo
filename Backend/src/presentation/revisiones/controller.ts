@@ -20,9 +20,7 @@ export class RevisionesController {
     constructor() { }
 
     public createRevision = async (req: Request, res: Response) => {
-        console.log("req.body >>>", req.body);
         const [error, createRevisionDto] = CreateRevisionDto.create(req.body);
-        console.log("createRevisionDto >>>", createRevisionDto);
         if (error) return res.status(400).json({ error });
 
         const newRevision = await prisma.revision.create({
@@ -79,6 +77,10 @@ export class RevisionesController {
     };
 
     public updateRevision = async (req: Request, res: Response) => {
+        const { pago } = req.body;
+        console.log("req.params.id >>>", req.params.id);
+            console.log("req.params.id + >>>", +req.params.id);
+            console.log("req.body >>>", req.body);
         const id = +req.params.id;
         const [error, updateRevisionDto] = UpdateRevisionDto.create({ id, ...req.body });
         if (error) return res.status(400).json({ error });
@@ -91,9 +93,11 @@ export class RevisionesController {
 
         const updatedRevision = await prisma.revision.update({
             where: { id },
-            data: updateRevisionDto!.values
+            data: {
+                ...updateRevisionDto!.values,
+                pago: pago // Asegúrate de usar el valor del enum aquí
+            }
         });
-
         return res.json(updatedRevision);
     };
 

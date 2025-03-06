@@ -3,7 +3,7 @@ import { createVehiculo } from "../actions/yo-me-encargo";
 
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
+const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext}) => {
     const [formData, setFormData] = useState({
         make: "",
         model: "",
@@ -15,7 +15,7 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, } = e.target;
 
 
         if (name === "licensePlate") {
@@ -26,7 +26,6 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
                     return [p1, p2, p3].filter(Boolean).join("-");
                 }
             );
-
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: formattedValue,
@@ -36,6 +35,12 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
                 ...prevData,
                 [name]: value.slice(0, 4),
             }));
+        } else if (name === "location") { // Agregar manejo para location
+            setFormData((prevData) => ({
+                ...prevData,
+                location: value, // Actualiza el estado de formData
+            }));
+            
         } else {
             setFormData((prevData) => ({
                 ...prevData,
@@ -82,13 +87,14 @@ const ModalFormulario = ({ mechanic, selectedDate, onBack, onNext }) => {
                     modelo: formData.model,
                     anio: formData.year,
                     patente: formData.licensePlate,
-                    location: formData.location,
+                    
                 };
 
                 onNext({
                     vehiculo: vehiculoData,
                     mechanic: mechanic,
-                    selectedDate: selectedDate
+                    selectedDate: selectedDate,
+                    location: formData.location,
                 });
             } catch (error) {
                 console.error("Error al registrar el vehículo:", error);

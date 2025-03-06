@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink} from '@react-pdf/renderer';
 
 
 // Estilos para el PDF
@@ -220,7 +220,7 @@ const DownloadLink = ({ vehicleData }) => (
         document={<ReportePDF vehicleData={vehicleData} />}
         fileName="reporte.pdf"
     >
-        {({ loading }) => (loading ? 'Generando PDF...' : 'Descargar PDF')}
+    Descargar PDF
     </PDFDownloadLink>
 );
 

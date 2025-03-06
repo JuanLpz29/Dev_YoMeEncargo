@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { createUsuario } from "../actions/yo-me-encargo";
 import ModalTerminos from '../components/ModalTerminos';
+import logoYme from '../assets/img/logoyme-secondary.svg'
 
 const RegisterPage = () => {
 	const [formData, setFormData] = useState({
@@ -123,7 +124,7 @@ const RegisterPage = () => {
 				<div className="p-4 bg-white rounded-lg max-w-md w-full">
 					<div className="flex justify-center mb-4">
 						<img
-							src="img/logoyme-secondary.svg"
+							src={logoYme}
 							width={280}
 							height={80}
 							alt="YoMeEncargo logo"

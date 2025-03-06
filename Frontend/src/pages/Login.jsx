@@ -52,7 +52,6 @@ const LoginPage = () => {
         };
 
         const result = await loginUsuario(usuarioData);
-        console.log("Usuario logueado:", result);
 
         if (result.token) {
           // Guardamos la información del usuario y el token

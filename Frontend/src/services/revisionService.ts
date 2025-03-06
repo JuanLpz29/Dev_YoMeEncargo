@@ -1,9 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 export const revisionService = {
     async saveReport(reportData: any): Promise<string> {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/revisiones`, {
+            const response = await fetch(`${API_URL}/revisiones`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const revisionService = {
 
     async getRevisionCompartida(id: string): Promise<any> {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/revisiones/${id}`);
+            const response = await fetch(`${API_URL}/revisiones/${id}`);
             if (!response.ok) {
                 throw new Error('Error al obtener la revisión');
             }

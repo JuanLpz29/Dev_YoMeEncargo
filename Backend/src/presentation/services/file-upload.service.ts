@@ -1,13 +1,12 @@
 import path from 'path';
-import { Response, Request } from 'express';
+import { Response, Request, NextFunction } from 'express';
 import multer, { StorageEngine } from 'multer';
-import { Uuid } from '../../config';
+import { v4 as uuidv4 } from 'uuid';
 import { CustomError } from '../../domain';
 import { ensureDirectoriesExist } from '../../utils/fileUtils';
 
 const uploadDirectories = ['uploads/certificados/', 'uploads/foto/'];
 ensureDirectoriesExist(uploadDirectories);
-
 
 // Configuración del almacenamiento con multer
 const storage: StorageEngine = multer.diskStorage({
@@ -17,7 +16,7 @@ const storage: StorageEngine = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const fileExtension = path.extname(file.originalname);
-        const fileName = `${Uuid.v4()}${fileExtension}`;
+        const fileName = `${uuidv4()}${fileExtension}`;
         cb(null, fileName);
     }
 });
@@ -28,7 +27,7 @@ const upload = multer({
         const validExtensions = ['png', 'gif', 'jpg', 'jpeg'];
         const fileExtension = path.extname(file.originalname).slice(1);
         if (!validExtensions.includes(fileExtension)) {
-            return cb(CustomError.badRequest(`Invalid extension: ${fileExtension}, valid ones: ${validExtensions.join(', ')}`));
+            return cb(new Error(`Invalid extension: ${fileExtension}, valid ones: ${validExtensions.join(', ')}`) as any, false);
         }
         cb(null, true);
     }
@@ -41,25 +40,42 @@ export class FileUploadService {
         { name: 'foto', maxCount: 1 }
     ]);
 
-    async handleSingleUpload(req: any, res: any, next: any) {
+    async handleSingleUpload(req: Request, res: Response, next: NextFunction) {
         this.uploadSingle(req, res, (error) => {
             if (error) {
                 return next(error);
             }
-            res.json({ fileName: req.file.filename });
+            res.json({ fileName: req.file?.filename });
         });
     }
 
-    async handleMultipleUpload(req: any, res: any, next: any) {
+    async handleMultipleUpload(req: Request, res: Response, next: NextFunction) {
         this.uploadMultiple(req, res, (error) => {
             if (error) {
                 return next(error);
             }
             const fileNames = {
-                certificado: req.files['certificado'][0].filename,
-                foto: req.files['foto'][0].filename
+                certificado: (req.files as { [key: string]: Express.Multer.File[] })?.certificado?.[0]?.filename,
+                foto: (req.files as { [key: string]: Express.Multer.File[] })?.foto?.[0]?.filename
             };
             res.json(fileNames);
+        });
+    }
+
+    validateFile(req: Request, res: Response, next: NextFunction) {
+        const validExtensions = ['png', 'gif', 'jpg', 'jpeg'];
+        
+        return this.uploadMultiple(req, res, (error) => {
+            if (error) return next(error);
+            
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            for (const fileArray of Object.values(files)) {
+                const fileExtension = path.extname(fileArray[0].originalname).slice(1);
+                if (!validExtensions.includes(fileExtension)) {
+                    return next(CustomError.badRequest(`Invalid extension: ${fileExtension}, valid ones: ${validExtensions.join(', ')}`));
+                }
+            }
+            next();
         });
     }
 }
